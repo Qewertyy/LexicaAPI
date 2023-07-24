@@ -42,7 +42,6 @@ class Client:
             "prompt": prompt
         }
         try:
-            print(self.url)
             resp = await self.session.post(
                 f"{self.url[0]}/models",
                 params=params,
