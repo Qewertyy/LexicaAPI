@@ -2,13 +2,14 @@
 from setuptools import setup
 
 setup(
-    name="openapi",
+    name="sdk-openapi",
     version="0.0.2",
     author="Qewertyy",
     author_email="Qewertyy.irl@gmail.com",
     description="The python package for api.qewertyy.me",
     url="https://github.com/Qewertyy/Open-API",
-    python_requires=">=3.6",
+    python_requires=">=3.8",
+    readme = "README.md",
     install_requires=[
         "requests",
         "aiohttp",
