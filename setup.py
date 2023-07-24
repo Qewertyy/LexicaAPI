@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="openapi",
-    version="0.0.1",
+    version="0.0.2",
     author="Qewertyy",
     author_email="Qewertyy.irl@gmail.com",
     description="The python package for api.qewertyy.me",

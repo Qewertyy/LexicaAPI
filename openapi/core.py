@@ -1,4 +1,4 @@
-from openapi.constansts import *
+from openapi.constants import *
 from httpx import AsyncClient
 
 class Client:
@@ -8,24 +8,24 @@ class Client:
 
     def __init__(
         self,
-        url = BASE_URL,
-        timeout = 30,
+        url: str = BASE_URL,
     ):
         """
-        Initialize the client instance
+        Initialize the class
         """
-    self.session = AsyncClient(
+        self.url = url,
+        self.session = AsyncClient(
             http2=True,
-            headers=SESSION_HEADERS
-        )
+            headers=SESSION_HEADERS,
+            )
     
     async def palm(self, prompt: str) -> dict:
-        """
+        """ 
         Get an answer from Palm 2 for the given prompt
         Example:
         >>> client = Client()
         >>> response = client.palm("Hello, Who are you?")
-        >>> print(response['content'])
+        >>> print(response)
 
         Args:
             prompt (str): Input text for the query.
@@ -39,13 +39,14 @@ class Client:
         """
         params = {
             "model_id": 0,
-            "prompt":prompt
+            "prompt": prompt
         }
         try:
+            print(self.url)
             resp = await self.session.post(
-                f"{self.url}/models",
+                f"{self.url[0]}/models",
                 params=params,
-                timeout=self.timeout
             )
+            return resp.json()
         except Exception as e:
             print(f"Request failed: {e}")
