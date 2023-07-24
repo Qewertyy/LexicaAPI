@@ -1,15 +1,21 @@
 # Copyright 2023 Qewertyy, MIT License
 from setuptools import setup
 
+def get_long_description():
+    with open("README.md", encoding="UTF-8") as f:
+        long_description = f.read()
+        return long_description
+
 setup(
     name="sdk-openapi",
-    version="0.0.2",
+    version="0.0.3",
     author="Qewertyy",
     author_email="Qewertyy.irl@gmail.com",
     description="The python package for api.qewertyy.me",
     url="https://github.com/Qewertyy/Open-API",
     python_requires=">=3.8",
-    readme = "README.md",
+    long_description=get_long_description(),
+    long_description_content_type="text/markdown",
     install_requires=[
         "requests",
         "aiohttp",
