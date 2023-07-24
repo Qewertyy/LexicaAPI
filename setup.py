@@ -8,7 +8,6 @@ setup(
     author_email="Qewertyy.irl@gmail.com",
     description="The python package for api.qewertyy.me",
     url="https://github.com/Qewertyy/Open-API",
-    packages=find_packages(exclude=[]),
     python_requires=">=3.6",
     install_requires=[
         "requests",

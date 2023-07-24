@@ -8,8 +8,8 @@ class Client:
 
     def __init__(
         self,
-        self.url = BASE_URL,
-        self.timeout = 30,
+        url = BASE_URL,
+        timeout = 30,
     ):
         """
         Initialize the client instance
