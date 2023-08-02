@@ -2,6 +2,7 @@ import base64
 from httpx import AsyncClient
 from openapi.constants import *
 
+
 class Client:
     """
     OpenApi Package for interacting with OpenAPI `api.qewertyy.me`
@@ -17,8 +18,8 @@ class Client:
         self.session = AsyncClient(
             http2=True,
             headers=SESSION_HEADERS,
-            )
-    
+        )
+
     async def palm(self, prompt: str) -> dict:
         """ 
         Get an answer from Palm 2 for the given prompt
@@ -41,23 +42,24 @@ class Client:
             "model_id": 0,
             "prompt": prompt
         }
+        self.session.headers.update({"Content-Type": "application/json"})
         try:
             resp = await self.session.post(
-                f"{self.url}/models",
+                f"{self.url[0]}/models",
                 params=params,
             )
             return resp.json()
         except Exception as e:
             print(f"Request failed: {e}")
-    
-    async def upscale(self,image:bytes) -> bytes:
+
+    async def upscale(self, image: bytes) -> bytes:
         """ 
         Upscale an image
         Example:
         >>> client = Client()
         >>> response = await client.upscale(image)
         >>> with open('upscaled.png', 'wb') as f:
-                f.write(response.content)
+                f.write(response)
 
         Args:
             image (bytes): Image in bytes.
@@ -68,7 +70,7 @@ class Client:
             b = base64.b64encode(image).decode('utf-8')
             response = await self.session.post(
                 f'{self.url[0]}/upscale',
-                    data={'image_data': b},
+                data={'image_data': b},
                 timeout=None
             )
             return response.content

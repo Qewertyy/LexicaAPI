@@ -22,7 +22,8 @@ import asyncio
 async def main(image: bytes) -> bytes:
     client = Client()
     response = await client.upscale(image)
-    return response
+    with open('upscaled.png', 'wb') as f:
+        f.write(imageBytes)
 
 
 if __name__ == "__main__":

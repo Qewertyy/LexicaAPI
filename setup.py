@@ -8,7 +8,7 @@ def get_long_description():
 
 setup(
     name="sdk-openapi",
-    version="0.0.4",
+    version="0.0.5",
     author="Qewertyy",
     author_email="Qewertyy.irl@gmail.com",
     description="The python package for api.qewertyy.me",

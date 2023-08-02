@@ -3,11 +3,10 @@ import asyncio
 
 async def main(image: bytes) -> bytes:
     client = Client()
-    response = await client.upscale(image)
-    return response
-
+    imageBytes = await client.upscale(image)
+    with open('upscaled.png', 'wb') as f:
+        f.write(imageBytes)
 
 if __name__ == "__main__":
-    with open('image.png', 'rb') as f:
-        image = f.read()
+    image = open('examples/images/image.png', 'rb').read()
     asyncio.run(main(image))
