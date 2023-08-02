@@ -42,10 +42,10 @@ class Client:
             "model_id": 0,
             "prompt": prompt
         }
-        self.session.headers.update({"Content-Type": "application/json"})
         try:
+            self.session.headers.update({"content-type": "application/json"})
             resp = await self.session.post(
-                f"{self.url[0]}/models",
+                f'{self.url[0]}/models',
                 params=params,
             )
             return resp.json()
