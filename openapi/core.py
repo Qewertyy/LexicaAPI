@@ -1,5 +1,6 @@
-from openapi.constants import *
+import base64
 from httpx import AsyncClient
+from openapi.constants import *
 
 class Client:
     """
@@ -7,13 +8,12 @@ class Client:
     """
 
     def __init__(
-        self,
-        url: str = BASE_URL,
+        self
     ):
         """
         Initialize the class
         """
-        self.url = url,
+        self.url = BASE_URL,
         self.session = AsyncClient(
             http2=True,
             headers=SESSION_HEADERS,
@@ -24,7 +24,7 @@ class Client:
         Get an answer from Palm 2 for the given prompt
         Example:
         >>> client = Client()
-        >>> response = client.palm("Hello, Who are you?")
+        >>> response = await client.palm("Hello, Who are you?")
         >>> print(response)
 
         Args:
@@ -43,9 +43,34 @@ class Client:
         }
         try:
             resp = await self.session.post(
-                f"{self.url[0]}/models",
+                f"{self.url}/models",
                 params=params,
             )
             return resp.json()
         except Exception as e:
             print(f"Request failed: {e}")
+    
+    async def upscale(self,image:bytes) -> bytes:
+        """ 
+        Upscale an image
+        Example:
+        >>> client = Client()
+        >>> response = await client.upscale(image)
+        >>> with open('upscaled.png', 'wb') as f:
+                f.write(response.content)
+
+        Args:
+            image (bytes): Image in bytes.
+        Returns:
+            bytes: Upscaled image in bytes.
+        """
+        try:
+            b = base64.b64encode(image).decode('utf-8')
+            response = await self.session.post(
+                f'{self.url[0]}/upscale',
+                    data={'image_data': b},
+                timeout=None
+            )
+            return response.content
+        except Exception as e:
+            print(f"Failed to upscale the image: {e}")
