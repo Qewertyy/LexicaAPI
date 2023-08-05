@@ -1,9 +1,9 @@
 import base64
-from requests import Session
+from httpx import AsyncClient as AsyncHttpxClient
 from openapi.constants import *
 
 
-class Client:
+class AsyncClient:
     """
     OpenApi Package for interacting with OpenAPI `api.qewertyy.me`
     """
@@ -15,19 +15,30 @@ class Client:
         Initialize the class
         """
         self.url = BASE_URL
-        self.session = Session()
-        self.models = self.getModels()
+        self.session = AsyncHttpxClient(
+            http2=True,
+            headers=SESSION_HEADERS,
+        )
+        self.models = []
     
-    def getModels(self) -> dict:
-        resp = self.session.get(f'{self.url}/models')
-        return resp.json()
+    async def getModels(self) -> dict:
+        resp = await self.session.get(f'{self.url}/models')
+        self.models = resp.json()
+        return self.models
     
-    def palm(self, prompt: str) -> dict:
+    async def __aenter__(self):
+        return self
+
+    async def close(self) -> None:
+        """Close async session"""
+        return await self.session.aclose()
+    
+    async def palm(self, prompt: str) -> dict:
         """ 
         Get an answer from PaLM 2 for the given prompt
         Example:
         >>> client = Client()
-        >>> response = client.palm("Hello, Who are you?")
+        >>> response = await client.palm("Hello, Who are you?")
         >>> print(response)
 
         Args:
@@ -46,7 +57,7 @@ class Client:
         }
         try:
             self.session.headers.update({"content-type": "application/json"})
-            resp = self.session.post(
+            resp = await self.session.post(
                 f'{self.url}/models',
                 params=params,
             )
@@ -54,12 +65,12 @@ class Client:
         except Exception as e:
             print(f"Request failed: {e}")
 
-    def upscale(self, image: bytes) -> bytes:
+    async def upscale(self, image: bytes) -> bytes:
         """ 
         Upscale an image
         Example:
         >>> client = Client()
-        >>> response = client.upscale(image)
+        >>> response = await client.upscale(image)
         >>> with open('upscaled.png', 'wb') as f:
                 f.write(response)
 
@@ -70,9 +81,10 @@ class Client:
         """
         try:
             b = base64.b64encode(image).decode('utf-8')
-            response = self.session.post(
+            response = await self.session.post(
                 f'{self.url}/upscale',
-                data={'image_data': b}
+                data={'image_data': b},
+                timeout=None
             )
             return response.content
         except Exception as e:
