@@ -1,4 +1,34 @@
-Simple Usage for palm
+Available Models
+
+```python
+from openapi import Client
+
+def main() -> dict:
+    client = Client()
+    response = client.getModels()
+    return response
+
+if __name__ == "__main__":
+    print(main())
+```
+output
+```json
+{
+    text: [
+      { id: 0, name: "models/text-bison-001" },
+    ],
+    chat: [
+      { id: 1, name: "models/chat-bison-001" },
+    ],
+    image: [
+      { id: 2, name: "MeinaMix" },
+      { id: 3, name: "AnyLora" },
+      { id: 4, name: "AnyThingV4" }
+    ]
+  }
+```
+
+Usage for palm
 
 ```python
 from openapi import Client
@@ -12,7 +42,7 @@ if __name__ == "__main__":
     print(main("hello world"))
 ```
 
-Simple Usage for upscaling an image.
+Usage for upscaling an image.
 
 ```python
 from openapi import Client

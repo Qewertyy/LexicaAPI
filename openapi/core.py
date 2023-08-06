@@ -16,7 +16,6 @@ class Client:
         """
         self.url = BASE_URL
         self.session = Session()
-        self.models = self.getModels()
     
     def getModels(self) -> dict:
         resp = self.session.get(f'{self.url}/models')
@@ -77,3 +76,70 @@ class Client:
             return response.content
         except Exception as e:
             print(f"Failed to upscale the image: {e}")
+
+    def generate(self,model_id:int,prompt:str,negative_prompt:str) -> dict:
+        """ 
+        Generate image from a prompt
+        Example:
+        >>> client = Client()
+        >>> response = client.generate(model_id,prompt,negative_prompt)
+        >>> print(response)
+
+        Args:
+            prompt (str): Input text for the query.
+            negative_prompt (str): Input text for the query.
+
+        Returns:
+            dict: Answer from the Open API in the following format:
+                {
+                    "message": str,
+                    "task_id": int,
+                    "request_id": str
+                }
+        """
+        data = {
+            "model_id": model_id,
+            "prompt": prompt,
+            "negative_prompt": negative_prompt,
+            #"num_images": 1,  optional number of images to generate (default: 1) and max 4
+        }
+        try:
+            resp = self.session.post(
+                f'{self.url}/models/inference',
+                data=data
+            )
+            return resp.json()
+        except Exception as e:
+            print(f"Request failed: {e}")
+    
+    def getImages(self,task_id:int,request_id:str) -> dict:
+        """ 
+        Generate image from a prompt
+        Example:
+        >>> client = Client()
+        >>> response = client.getImages(task_id,request_id)
+        >>> print(response)
+
+        Args:
+            prompt (str): Input text for the query.
+            negative_prompt (str): Input text for the query.
+
+        Returns:
+            dict: Answer from the Open API in the following format:
+                {
+                    "message": str,
+                    "img_urls": array,
+                }
+        """
+        data = {
+            "task_id": task_id,
+            "request_id": request_id
+        }
+        try:
+            resp = self.session.post(
+                f'{self.url}/models/inference/task',
+                data=data
+            )
+            return resp.json()
+        except Exception as e:
+            print(f"Request failed: {e}")

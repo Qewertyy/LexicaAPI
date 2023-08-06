@@ -19,12 +19,10 @@ class AsyncClient:
             http2=True,
             headers=SESSION_HEADERS,
         )
-        self.models = []
     
     async def getModels(self) -> dict:
         resp = await self.session.get(f'{self.url}/models')
-        self.models = resp.json()
-        return self.models
+        return resp.json()
     
     async def __aenter__(self):
         return self
