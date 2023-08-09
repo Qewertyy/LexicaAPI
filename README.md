@@ -1,5 +1,4 @@
 Available Models
-
 ```python
 from openapi import Client
 
@@ -11,24 +10,48 @@ def main() -> dict:
 if __name__ == "__main__":
     print(main())
 ```
+
 output
+
 ```json
 {
-    text: [
-      { id: 0, name: "models/text-bison-001" },
+    "text": [
+        {
+            "id": 0,
+            "name": "models/text-bison-001",
+            "baseModel": "PaLM"
+        }
     ],
-    chat: [
-      { id: 1, name: "models/chat-bison-001" },
+    "chat": [
+        {
+            "id": 1,
+            "name": "models/chat-bison-001",
+            "baseModel": "PaLM"
+        },
+        {
+            "id": 5,
+            "name": "gpt-3.5-turbo",
+            "baseModel": "GPT"
+        }
     ],
-    image: [
-      { id: 2, name: "MeinaMix" },
-      { id: 3, name: "AnyLora" },
-      { id: 4, name: "AnyThingV4" }
+    "image": [
+        {
+            "id": 2,
+            "name": "MeinaMix"
+        },
+        {
+            "id": 3,
+            "name": "AnyLora"
+        },
+        {
+            "id": 4,
+            "name": "AnyThingV4"
+        }
     ]
-  }
+}
 ```
 
-Usage for palm
+palm
 
 ```python
 from openapi import Client
@@ -42,7 +65,7 @@ if __name__ == "__main__":
     print(main("hello world"))
 ```
 
-Usage for upscaling an image.
+upscaling an image.
 
 ```python
 from openapi import Client
