@@ -53,6 +53,38 @@ class Client:
         except Exception as e:
             print(f"Request failed: {e}")
 
+    def gpt(self, prompt: str) -> dict:
+        """ 
+        Get an answer from GPT-3.5-Turbo for the given prompt
+        Example:
+        >>> client = Client()
+        >>> response = client.gpt("Hello, Who are you?")
+        >>> print(response)
+
+        Args:
+            prompt (str): Input text for the query.
+
+        Returns:
+            dict: Answer from the Open API in the following format:
+                {
+                    "status": str,
+                    "content": str
+                }
+        """
+        params = {
+            "model_id": 5,
+            "prompt": prompt
+        }
+        try:
+            self.session.headers.update({"content-type": "application/json"})
+            resp = self.session.post(
+                f'{self.url}/models',
+                params=params,
+            )
+            return resp.json()
+        except Exception as e:
+            print(f"Request failed: {e}")
+
     def upscale(self, image: bytes) -> bytes:
         """ 
         Upscale an image

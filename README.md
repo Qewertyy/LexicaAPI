@@ -37,15 +37,23 @@ output
     "image": [
         {
             "id": 2,
-            "name": "MeinaMix"
+            "name": "MeinaMix",
+            "baseModel": "SD"
         },
         {
             "id": 3,
-            "name": "AnyLora"
+            "name": "AnyLora",
+            "baseModel": "SD"
         },
         {
             "id": 4,
-            "name": "AnyThingV4"
+            "name": "AnyThingV4",
+            "baseModel": "SD"
+        },
+        {
+            "id": 6,
+            "name": "Bing",
+            "baseModel": "Dall-E"
         }
     ]
 }
