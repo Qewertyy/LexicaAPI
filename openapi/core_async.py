@@ -63,7 +63,7 @@ class AsyncClient:
         except Exception as e:
             print(f"Request failed: {str(e)}")
 
-    async def gpt(self, prompt: str) -> dict:
+    async def gpt(self, prompt: str,context: str = False) -> dict:
         """ 
         Get an answer from GPT-3.5-Turbo for the given prompt
         Example:
@@ -84,6 +84,7 @@ class AsyncClient:
         params = {
             "model_id": 5,
             "prompt": prompt
+            ,"context": context if context else ''
         }
         try:
             self.session.headers.update({"content-type": "application/json"})
