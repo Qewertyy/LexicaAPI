@@ -1,5 +1,5 @@
 import time
-from openapi import Client
+from lexica import Client
 
 def main(model_id:int,prompt:str,negative_prompt:str) -> dict:
     client = Client()

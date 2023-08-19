@@ -1,4 +1,4 @@
-from openapi import Client
+from lexica import Client
 
 def main(prompt: str) -> dict:
     client = Client()

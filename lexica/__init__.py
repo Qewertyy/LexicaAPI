@@ -1,7 +1,7 @@
 # Copyright 2023 Qewertyy, MIT License
 
-from openapi.core import Client
-from openapi.core_async import AsyncClient
+from lexica.core import Client
+from lexica.core_async import AsyncClient
 
 __all__ = [
     "Client",

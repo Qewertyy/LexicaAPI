@@ -1,5 +1,5 @@
 import asyncio
-from openapi import AsyncClient
+from lexica import AsyncClient
 
 async def main(model_id:int,prompt:str,negative_prompt:str) -> dict:
     client = AsyncClient()

@@ -1,9 +1,9 @@
 import base64
-from httpx import AsyncClient as AsyncHttpxClient
-from openapi.constants import *
+from requests import Session
+from lexica.constants import *
 
 
-class AsyncClient:
+class Client:
     """
     OpenApi Package for interacting with OpenAPI `api.qewertyy.me`
     """
@@ -15,28 +15,18 @@ class AsyncClient:
         Initialize the class
         """
         self.url = BASE_URL
-        self.session = AsyncHttpxClient(
-            http2=True,
-            headers=SESSION_HEADERS,
-        )
+        self.session = Session()
     
-    async def getModels(self) -> dict:
-        resp = await self.session.get(f'{self.url}/models')
+    def getModels(self) -> dict:
+        resp = self.session.get(f'{self.url}/models')
         return resp.json()
     
-    async def __aenter__(self):
-        return self
-
-    async def close(self) -> None:
-        """Close async session"""
-        return await self.session.aclose()
-    
-    async def palm(self, prompt: str) -> dict:
+    def palm(self, prompt: str) -> dict:
         """ 
         Get an answer from PaLM 2 for the given prompt
         Example:
         >>> client = Client()
-        >>> response = await client.palm("Hello, Who are you?")
+        >>> response = client.palm("Hello, Who are you?")
         >>> print(response)
 
         Args:
@@ -55,20 +45,20 @@ class AsyncClient:
         }
         try:
             self.session.headers.update({"content-type": "application/json"})
-            resp = await self.session.post(
+            resp = self.session.post(
                 f'{self.url}/models',
                 params=params,
             )
             return resp.json()
         except Exception as e:
-            print(f"Request failed: {str(e)}")
+            print(f"Request failed: {e}")
 
-    async def gpt(self, prompt: str,context: str = False) -> dict:
+    def gpt(self, prompt: str,context: str=False) -> dict:
         """ 
         Get an answer from GPT-3.5-Turbo for the given prompt
         Example:
         >>> client = Client()
-        >>> response = await client.gpt("Hello, Who are you?")
+        >>> response = client.gpt("Hello, Who are you?")
         >>> print(response)
 
         Args:
@@ -88,20 +78,20 @@ class AsyncClient:
         }
         try:
             self.session.headers.update({"content-type": "application/json"})
-            resp = await self.session.post(
+            resp = self.session.post(
                 f'{self.url}/models',
                 params=params,
             )
             return resp.json()
         except Exception as e:
-            print(f"Request failed: {str(e)}")
+            print(f"Request failed: {e}")
 
-    async def upscale(self, image: bytes) -> bytes:
+    def upscale(self, image: bytes) -> bytes:
         """ 
         Upscale an image
         Example:
         >>> client = Client()
-        >>> response = await client.upscale(image)
+        >>> response = client.upscale(image)
         >>> with open('upscaled.png', 'wb') as f:
                 f.write(response)
 
@@ -112,21 +102,20 @@ class AsyncClient:
         """
         try:
             b = base64.b64encode(image).decode('utf-8')
-            response = await self.session.post(
+            response = self.session.post(
                 f'{self.url}/upscale',
-                data={'image_data': b},
-                timeout=None
+                data={'image_data': b}
             )
             return response.content
         except Exception as e:
-            print(f"Failed to upscale the image: {str(e)}")
+            print(f"Failed to upscale the image: {e}")
 
-    async def generate(self,model_id:int,prompt:str,negative_prompt:str) -> dict:
+    def generate(self,model_id:int,prompt:str,negative_prompt:str) -> dict:
         """ 
         Generate image from a prompt
         Example:
         >>> client = Client()
-        >>> response = await client.generate(model_id,prompt,negative_prompt)
+        >>> response = client.generate(model_id,prompt,negative_prompt)
         >>> print(response)
 
         Args:
@@ -148,15 +137,15 @@ class AsyncClient:
             #"num_images": 1,  optional number of images to generate (default: 1) and max 4
         }
         try:
-            resp = await self.session.post(
+            resp = self.session.post(
                 f'{self.url}/models/inference',
                 data=data
             )
             return resp.json()
         except Exception as e:
-            print(f"Request failed: {str(e)}")
+            print(f"Request failed: {e}")
     
-    async def getImages(self,task_id:int,request_id:str) -> dict:
+    def getImages(self,task_id:int,request_id:str) -> dict:
         """ 
         Generate image from a prompt
         Example:
@@ -180,10 +169,10 @@ class AsyncClient:
             "request_id": request_id
         }
         try:
-            resp = await self.session.post(
+            resp = self.session.post(
                 f'{self.url}/models/inference/task',
                 data=data
             )
             return resp.json()
         except Exception as e:
-            print(f"Request failed: {str(e)}")
+            print(f"Request failed: {e}")

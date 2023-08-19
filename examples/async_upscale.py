@@ -1,4 +1,4 @@
-from openapi import AsyncClient
+from lexica import AsyncClient
 import asyncio
 
 async def async_main(image: bytes) -> bytes:

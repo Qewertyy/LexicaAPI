@@ -1,6 +1,6 @@
 # async usage
 
-from openapi import AsyncClient
+from lexica import AsyncClient
 import asyncio
 
 async def async_main() -> dict:
@@ -11,7 +11,7 @@ async def async_main() -> dict:
 
 # sync usage
 
-from openapi import Client
+from lexica import Client
 
 def main() -> dict:
     client = Client()

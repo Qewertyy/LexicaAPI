@@ -1,4 +1,4 @@
-from openapi import Client
+from lexica import Client
 
 def main(image: bytes) -> bytes:
     client = Client()

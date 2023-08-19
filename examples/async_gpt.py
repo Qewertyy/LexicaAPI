@@ -1,5 +1,5 @@
 import asyncio
-from openapi import AsyncClient
+from lexica import AsyncClient
 
 async def main(prompt: str) -> dict:
     client = AsyncClient()
