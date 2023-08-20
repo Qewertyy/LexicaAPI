@@ -121,7 +121,7 @@ class AsyncClient:
         except Exception as e:
             print(f"Failed to upscale the image: {str(e)}")
 
-    async def generate(self,model_id:int,prompt:str,negative_prompt:str) -> dict:
+    async def generate(self,model_id:int,prompt:str,negative_prompt:str=None,images: int= None) -> dict:
         """ 
         Generate image from a prompt
         Example:
@@ -144,8 +144,8 @@ class AsyncClient:
         data = {
             "model_id": model_id,
             "prompt": prompt,
-            "negative_prompt": negative_prompt,
-            #"num_images": 1,  optional number of images to generate (default: 1) and max 4
+            "negative_prompt": negative_prompt if negative_prompt else '', #optional
+            "num_images": images if images else 1,  #optional number of images to generate (default: 1) and max 4
         }
         try:
             resp = await self.session.post(
