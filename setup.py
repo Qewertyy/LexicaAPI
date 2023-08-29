@@ -12,7 +12,7 @@ setup(
     author="Qewertyy",
     author_email="Qewertyy.irl@gmail.com",
     description="The python package for api.qewertyy.me",
-    url="https://github.com/Qewertyy/Open-API",
+    url="https://github.com/Qewertyy/LexicaAPI",
     python_requires=">=3.8",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
