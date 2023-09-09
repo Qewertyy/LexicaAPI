@@ -53,15 +53,14 @@ class AsyncClient:
             "model_id": 0,
             "prompt": prompt
         }
-        try:
-            self.session.headers.update({"content-type": "application/json"})
-            resp = await self.session.post(
+        self.session.headers.update({"content-type": "application/json"})
+        resp = (await self.session.post(
                 f'{self.url}/models',
                 params=params,
-            )
-            return resp.json()
-        except Exception as e:
-            print(f"Request failed: {str(e)}")
+            )).json()
+        if resp['code'] == 0:
+            raise Exception(f"API error {resp}")
+        return resp
 
     async def gpt(self, prompt: str,context: str = False) -> dict:
         """ 
@@ -86,15 +85,14 @@ class AsyncClient:
             "prompt": prompt
             ,"context": context if context else ''
         }
-        try:
-            self.session.headers.update({"content-type": "application/json"})
-            resp = await self.session.post(
-                f'{self.url}/models',
-                params=params,
-            )
-            return resp.json()
-        except Exception as e:
-            print(f"Request failed: {str(e)}")
+        self.session.headers.update({"content-type": "application/json"})
+        resp = (await self.session.post(
+            f'{self.url}/models',
+            params=params,
+        )).json()
+        if resp['code'] == 0:
+            raise Exception(f"API error {resp}")
+        return resp
 
     async def upscale(self, image: bytes) -> bytes:
         """ 
@@ -147,14 +145,13 @@ class AsyncClient:
             "negative_prompt": negative_prompt if negative_prompt else '', #optional
             "num_images": images if images else 1,  #optional number of images to generate (default: 1) and max 4
         }
-        try:
-            resp = await self.session.post(
-                f'{self.url}/models/inference',
-                data=data
-            )
-            return resp.json()
-        except Exception as e:
-            print(f"Request failed: {str(e)}")
+        resp = (await self.session.post(
+            f'{self.url}/models/inference',
+            data=data
+        )).json()
+        if resp['code'] == 0:
+            raise Exception(f"API error {resp}")
+        return resp
     
     async def getImages(self,task_id:int,request_id:str) -> dict:
         """ 
@@ -179,11 +176,10 @@ class AsyncClient:
             "task_id": task_id,
             "request_id": request_id
         }
-        try:
-            resp = await self.session.post(
-                f'{self.url}/models/inference/task',
-                data=data
-            )
-            return resp.json()
-        except Exception as e:
-            print(f"Request failed: {str(e)}")
+        resp = (await self.session.post(
+            f'{self.url}/models/inference/task',
+            data=data
+        )).json()
+        if resp['code'] == 0:
+            raise Exception(f"API error {resp}")
+        return resp

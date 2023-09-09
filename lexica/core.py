@@ -43,15 +43,14 @@ class Client:
             "model_id": 0,
             "prompt": prompt
         }
-        try:
-            self.session.headers.update({"content-type": "application/json"})
-            resp = self.session.post(
-                f'{self.url}/models',
-                params=params,
-            )
-            return resp.json()
-        except Exception as e:
-            print(f"Request failed: {e}")
+        self.session.headers.update({"content-type": "application/json"})
+        resp = self.session.post(
+            f'{self.url}/models',
+            params=params,
+        ).json()
+        if resp['code'] == 0:
+            raise Exception(f"API error {resp}")
+        return resp
 
     def gpt(self, prompt: str,context: str=False) -> dict:
         """ 
@@ -76,15 +75,14 @@ class Client:
             "prompt": prompt
             ,"context": context if context else ''
         }
-        try:
-            self.session.headers.update({"content-type": "application/json"})
-            resp = self.session.post(
-                f'{self.url}/models',
-                params=params,
-            )
-            return resp.json()
-        except Exception as e:
-            print(f"Request failed: {e}")
+        self.session.headers.update({"content-type": "application/json"})
+        resp = self.session.post(
+            f'{self.url}/models',
+            params=params,
+        ).json()
+        if resp['code'] == 0:
+            raise Exception(f"API error {resp}")
+        return resp
 
     def upscale(self, image: bytes) -> bytes:
         """ 
@@ -100,15 +98,14 @@ class Client:
         Returns:
             bytes: Upscaled image in bytes.
         """
-        try:
-            b = base64.b64encode(image).decode('utf-8')
-            response = self.session.post(
-                f'{self.url}/upscale',
-                data={'image_data': b}
-            )
-            return response.content
-        except Exception as e:
-            print(f"Failed to upscale the image: {e}")
+        b = base64.b64encode(image).decode('utf-8')
+        response = self.session.post(
+            f'{self.url}/upscale',
+            data={'image_data': b}
+        )
+        if response.status_code != 200:
+            raise Exception(f"API error {response.text}")
+        return response.content
 
     def generate(self,model_id:int,prompt:str,negative_prompt:str=None,images: int=None) -> dict:
         """ 
@@ -136,14 +133,13 @@ class Client:
             "negative_prompt": negative_prompt if negative_prompt else '', #optional
             "num_images": images if images else 1,  #optional number of images to generate (default: 1) and max 4
         }
-        try:
-            resp = self.session.post(
-                f'{self.url}/models/inference',
-                data=data
-            )
-            return resp.json()
-        except Exception as e:
-            print(f"Request failed: {e}")
+        resp = self.session.post(
+            f'{self.url}/models/inference',
+            data=data
+        ).json()
+        if resp['code'] == 0:
+            raise Exception(f"API error {resp}")
+        return resp
     
     def getImages(self,task_id:int,request_id:str) -> dict:
         """ 
@@ -168,11 +164,10 @@ class Client:
             "task_id": task_id,
             "request_id": request_id
         }
-        try:
-            resp = self.session.post(
-                f'{self.url}/models/inference/task',
-                data=data
-            )
-            return resp.json()
-        except Exception as e:
-            print(f"Request failed: {e}")
+        resp = self.session.post(
+            f'{self.url}/models/inference/task',
+            data=data
+        ).json()
+        if resp['code'] == 0:
+            raise Exception(f"API Error {resp}")
+        return resp
