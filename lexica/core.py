@@ -1,13 +1,12 @@
-import base64
-from requests import Session
+import base64, httpx
 from lexica.constants import *
-
+from lexica.utils import *
+from typing import Union,Dict
 
 class Client:
     """
-    OpenApi Package for interacting with OpenAPI `api.qewertyy.me`
+    Sync Client
     """
-
     def __init__(
         self
     ):
@@ -15,11 +14,40 @@ class Client:
         Initialize the class
         """
         self.url = BASE_URL
-        self.session = Session()
+        self.session = httpx.Client(
+                http2=True
+            )
+        self.timeout = 60
+        self.headers = SESSION_HEADERS
     
+    def _request(self, **kwargs) -> Union[Dict,bytes]:
+        self.headers.update(kwargs.get("headers",{}))
+        contents = {'json':{},'data':{},'files':{}}
+        for i in list(contents):
+            if i in kwargs:
+                contents[i] = clean_dict(kwargs.get(i))
+        response = self.session.request(
+                method=kwargs.get('method', 'GET'),
+                url=kwargs.get('url'),
+                headers=self.headers,
+                params=kwargs.get('params'),
+                data=contents.get('data'),
+                json=contents.get('json'),
+                files=contents.get('files'),
+                timeout=self.timeout,
+            )
+        if response.status_code != 200:
+            raise Exception(f"API error {response.text}")
+        if response.headers.get('content-type') in ['image/png','image/jpeg','image/jpg'] :
+            return response.content
+        rdata = response.json()
+        if rdata['code'] == 0:
+            raise Exception(f"API error {response.text}")
+        return rdata
+
     def getModels(self) -> dict:
-        resp = self.session.get(f'{self.url}/models')
-        return resp.json()
+        resp = self._request(url=f'{self.url}/models')
+        return resp
     
     def palm(self, prompt: str) -> dict:
         """ 
@@ -33,23 +61,23 @@ class Client:
             prompt (str): Input text for the query.
 
         Returns:
-            dict: Answer from the Open API in the following format:
+            dict: Answer from the API in the following format:
                 {
-                    "status": str,
-                    "content": str
+                    "message": str,
+                    "content": str,
+                    "code": int
                 }
         """
         params = {
             "model_id": 0,
             "prompt": prompt
         }
-        self.session.headers.update({"content-type": "application/json"})
-        resp = self.session.post(
-            f'{self.url}/models',
+        resp = self._request(
+            url=f'{self.url}/models',
+            method='POST',
             params=params,
-        ).json()
-        if resp['code'] == 0:
-            raise Exception(f"API error {resp}")
+            headers = {"content-type": "application/json"}
+        )
         return resp
 
     def gpt(self, prompt: str,context: str=False) -> dict:
@@ -64,7 +92,7 @@ class Client:
             prompt (str): Input text for the query.
 
         Returns:
-            dict: Answer from the Open API in the following format:
+            dict: Answer from the API in the following format:
                 {
                     "status": str,
                     "content": str
@@ -75,13 +103,11 @@ class Client:
             "prompt": prompt
             ,"context": context if context else ''
         }
-        self.session.headers.update({"content-type": "application/json"})
-        resp = self.session.post(
-            f'{self.url}/models',
+        resp = self._request(
+            url=f'{self.url}/models',
             params=params,
-        ).json()
-        if resp['code'] == 0:
-            raise Exception(f"API error {resp}")
+            headers={"content-type": "application/json"}
+            )
         return resp
 
     def upscale(self, image: bytes) -> bytes:
@@ -99,15 +125,14 @@ class Client:
             bytes: Upscaled image in bytes.
         """
         b = base64.b64encode(image).decode('utf-8')
-        response = self.session.post(
-            f'{self.url}/upscale',
-            data={'image_data': b}
+        content = self._request(
+            url=f'{self.url}/upscale',
+            method = 'POST',
+            json={'image_data': b}
         )
-        if response.status_code != 200:
-            raise Exception(f"API error {response.text}")
-        return response.content
+        return content
 
-    def generate(self,model_id:int,prompt:str,negative_prompt:str=None,images: int=None) -> dict:
+    def generate(self,model_id:int,prompt:str,negative_prompt:str="",images: int=1) -> dict:
         """ 
         Generate image from a prompt
         Example:
@@ -120,28 +145,28 @@ class Client:
             negative_prompt (str): Input text for the query.
 
         Returns:
-            dict: Answer from the Open API in the following format:
+            dict: Answer from the API in the following format:
                 {
                     "message": str,
                     "task_id": int,
                     "request_id": str
                 }
         """
-        data = {
+        payload = {
             "model_id": model_id,
             "prompt": prompt,
-            "negative_prompt": negative_prompt if negative_prompt else '', #optional
-            "num_images": images if images else 1,  #optional number of images to generate (default: 1) and max 4
+            "negative_prompt": negative_prompt, #optional
+            "num_images": images,  #optional number of images to generate (default: 1) and max 4
         }
-        resp = self.session.post(
-            f'{self.url}/models/inference',
-            data=data
-        ).json()
-        if resp['code'] == 0:
-            raise Exception(f"API error {resp}")
+        resp = self._request(
+            url=f'{self.url}/models/inference',
+            method='POST',
+            json=payload,
+            headers={"content-type": "application/json"}
+        )
         return resp
     
-    def getImages(self,task_id:int,request_id:str) -> dict:
+    def getImages(self,task_id:str,request_id:str) -> dict:
         """ 
         Generate image from a prompt
         Example:
@@ -154,20 +179,21 @@ class Client:
             negative_prompt (str): Input text for the query.
 
         Returns:
-            dict: Answer from the Open API in the following format:
+            dict: Answer from the API in the following format:
                 {
                     "message": str,
                     "img_urls": array,
+                    "code": int
                 }
         """
-        data = {
+        payload = {
             "task_id": task_id,
             "request_id": request_id
         }
-        resp = self.session.post(
-            f'{self.url}/models/inference/task',
-            data=data
-        ).json()
-        if resp['code'] == 0:
-            raise Exception(f"API Error {resp}")
+        resp = self._request(
+            url=f'{self.url}/models/inference/task',
+            method='POST',
+            json=payload,
+            headers={"content-type": "application/json"}
+        )
         return resp

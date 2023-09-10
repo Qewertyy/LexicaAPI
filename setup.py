@@ -8,7 +8,7 @@ def get_long_description():
 
 setup(
     name="lexica-api",
-    version="1.2.3",
+    version="1.3.5",
     author="Qewertyy",
     author_email="Qewertyy.irl@gmail.com",
     description="The python package for api.qewertyy.me",
@@ -17,7 +17,6 @@ setup(
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
     install_requires=[
-        "requests",
         "httpx[http2]",
         "asyncio"
     ],

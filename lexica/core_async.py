@@ -1,11 +1,12 @@
 import base64
+from typing import Union, Dict
 from httpx import AsyncClient as AsyncHttpxClient
 from lexica.constants import *
-
+from lexica.utils import *
 
 class AsyncClient:
     """
-    OpenApi Package for interacting with OpenAPI `api.qewertyy.me`
+    Async Client
     """
 
     def __init__(
@@ -17,12 +18,39 @@ class AsyncClient:
         self.url = BASE_URL
         self.session = AsyncHttpxClient(
             http2=True,
-            headers=SESSION_HEADERS,
         )
+        self.headers = SESSION_HEADERS
+        self.timeout = 60
     
+    async def _request(self, **kwargs) -> Union[Dict,bytes]:
+        self.headers.update(kwargs.get("headers",{}))
+        contents = {'json':{},'data':{},'files':{}}
+        for i in list(contents):
+            if i in kwargs:
+                contents[i] = clean_dict(kwargs.get(i))
+        response = await self.session.request(
+                method=kwargs.get('method', 'GET'),
+                url=kwargs.get('url'),
+                headers=self.headers,
+                content=kwargs.get('content'),
+                params=kwargs.get('params'),
+                data=contents.get('data'),
+                json=contents.get('json'),
+                files=contents.get('files'),
+                timeout=self.timeout,
+            )
+        if response.status_code != 200:
+            raise Exception(f"API error {response.text}")
+        if response.headers.get('content-type') in ['image/png','image/jpeg','image/jpg'] :
+            return response.content
+        rdata = response.json()
+        if rdata['code'] == 0:
+            raise Exception(f"API error {response.text}")
+        return rdata
+
     async def getModels(self) -> dict:
-        resp = await self.session.get(f'{self.url}/models')
-        return resp.json()
+        resp = await self._request(url=f'{self.url}/models')
+        return resp
     
     async def __aenter__(self):
         return self
@@ -31,7 +59,7 @@ class AsyncClient:
         """Close async session"""
         return await self.session.aclose()
     
-    async def palm(self, prompt: str) -> dict:
+    async def palm(self, prompt: str,model_id:int=0) -> dict:
         """ 
         Get an answer from PaLM 2 for the given prompt
         Example:
@@ -43,23 +71,23 @@ class AsyncClient:
             prompt (str): Input text for the query.
 
         Returns:
-            dict: Answer from the Open API in the following format:
+            dict: Answer from the API in the following format:
                 {
-                    "status": str,
-                    "content": str
+                    "message": str,
+                    "content": str,
+                    "code": int
                 }
         """
         params = {
-            "model_id": 0,
+            "model_id": model_id,
             "prompt": prompt
         }
-        self.session.headers.update({"content-type": "application/json"})
-        resp = (await self.session.post(
-                f'{self.url}/models',
-                params=params,
-            )).json()
-        if resp['code'] == 0:
-            raise Exception(f"API error {resp}")
+        resp = await self._request(
+            url=f'{self.url}/models',
+            method='POST',
+            params=params,
+            headers = {"content-type": "application/json"}
+        )
         return resp
 
     async def gpt(self, prompt: str,context: str = False) -> dict:
@@ -74,24 +102,24 @@ class AsyncClient:
             prompt (str): Input text for the query.
 
         Returns:
-            dict: Answer from the Open API in the following format:
+            dict: Answer from the API in the following format:
                 {
                     "status": str,
-                    "content": str
+                    "content": str,
+                    "code": int
                 }
         """
         params = {
             "model_id": 5,
-            "prompt": prompt
-            ,"context": context if context else ''
+            "prompt": prompt,
+            "context": context if context else ''
         }
-        self.session.headers.update({"content-type": "application/json"})
-        resp = (await self.session.post(
-            f'{self.url}/models',
+        resp = await self._request(
+            url=f'{self.url}/models',
+            method='POST',
             params=params,
-        )).json()
-        if resp['code'] == 0:
-            raise Exception(f"API error {resp}")
+            headers = {"content-type": "application/json"}
+        )
         return resp
 
     async def upscale(self, image: bytes) -> bytes:
@@ -108,18 +136,15 @@ class AsyncClient:
         Returns:
             bytes: Upscaled image in bytes.
         """
-        try:
-            b = base64.b64encode(image).decode('utf-8')
-            response = await self.session.post(
-                f'{self.url}/upscale',
-                data={'image_data': b},
-                timeout=None
-            )
-            return response.content
-        except Exception as e:
-            print(f"Failed to upscale the image: {str(e)}")
-
-    async def generate(self,model_id:int,prompt:str,negative_prompt:str=None,images: int= None) -> dict:
+        b = base64.b64encode(image).decode('utf-8')
+        content = await self._request(
+            url=f'{self.url}/upscale',
+            method='POST',
+            json={'image_data': b}
+        )
+        return content
+    
+    async def generate(self,model_id:int,prompt:str,negative_prompt:str="",images: int= 1) -> dict:
         """ 
         Generate image from a prompt
         Example:
@@ -132,28 +157,29 @@ class AsyncClient:
             negative_prompt (str): Input text for the query.
 
         Returns:
-            dict: Answer from the Open API in the following format:
+            dict: Answer from the API in the following format:
                 {
                     "message": str,
                     "task_id": int,
-                    "request_id": str
+                    "request_id": str,
+                    "code": int
                 }
         """
-        data = {
+        payload = {
             "model_id": model_id,
             "prompt": prompt,
-            "negative_prompt": negative_prompt if negative_prompt else '', #optional
-            "num_images": images if images else 1,  #optional number of images to generate (default: 1) and max 4
+            "negative_prompt": negative_prompt, #optional
+            "num_images": images,  #optional number of images to generate (default: 1) and max 4
         }
-        resp = (await self.session.post(
-            f'{self.url}/models/inference',
-            data=data
-        )).json()
-        if resp['code'] == 0:
-            raise Exception(f"API error {resp}")
+        resp = await self._request(
+            url=f'{self.url}/models/inference',
+            method='POST',
+            json=payload,
+            headers = {"content-type": "application/json"}
+        )
         return resp
     
-    async def getImages(self,task_id:int,request_id:str) -> dict:
+    async def getImages(self,task_id:str,request_id:str) -> dict:
         """ 
         Generate image from a prompt
         Example:
@@ -166,20 +192,20 @@ class AsyncClient:
             negative_prompt (str): Input text for the query.
 
         Returns:
-            dict: Answer from the Open API in the following format:
+            dict: Answer from the API in the following format:
                 {
                     "message": str,
                     "img_urls": array,
                 }
         """
-        data = {
+        payload = {
             "task_id": task_id,
             "request_id": request_id
         }
-        resp = (await self.session.post(
-            f'{self.url}/models/inference/task',
-            data=data
-        )).json()
-        if resp['code'] == 0:
-            raise Exception(f"API error {resp}")
+        resp = await self._request(
+            url=f'{self.url}/models/inference/task',
+            method='POST',
+            json=payload,
+            headers = {"content-type": "application/json"}
+        )
         return resp

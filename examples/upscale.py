@@ -3,7 +3,7 @@ from lexica import Client
 def main(image: bytes) -> bytes:
     client = Client()
     imageBytes = client.upscale(image)
-    with open('upscaled.png', 'wb') as f:
+    with open('examples/images/upscaled.png', 'wb') as f:
         f.write(imageBytes)
 
 if __name__ == "__main__":
