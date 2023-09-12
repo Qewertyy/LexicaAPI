@@ -196,6 +196,7 @@ class AsyncClient:
                 {
                     "message": str,
                     "img_urls": array,
+                    "code": int
                 }
         """
         payload = {
