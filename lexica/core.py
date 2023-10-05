@@ -105,6 +105,7 @@ class Client:
         }
         resp = self._request(
             url=f'{self.url}/models',
+            method='POST',
             params=params,
             headers={"content-type": "application/json"}
             )
