@@ -1,0 +1,9 @@
+from lexica import Client
+
+def main(prompt: str) -> dict:
+    client = Client()
+    response = client.bard(prompt)
+    return response
+
+if __name__ == "__main__":
+    print(main("hello, who are you?"))

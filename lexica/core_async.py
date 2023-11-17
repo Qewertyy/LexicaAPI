@@ -121,6 +121,37 @@ class AsyncClient:
             headers = {"content-type": "application/json"}
         )
         return resp
+    
+    async def bard(self, prompt: str,context: str = False) -> dict:
+        """ 
+        Get an answer from Bard AI by google for the given prompt
+        Example:
+        >>> client = Client()
+        >>> response = await client.bard("Hello, Who are you?")
+        >>> print(response)
+
+        Args:
+            prompt (str): Input text for the query.
+
+        Returns:
+            dict: Answer from the API in the following format:
+                {
+                    "message": str,
+                    "content": str,
+                    "code": int
+                }
+        """
+        params = {
+            "model_id": 20,
+            "prompt": prompt
+        }
+        resp = await self._request(
+            url=f'{self.url}/models',
+            method='POST',
+            params=params,
+            headers = {"content-type": "application/json"}
+        )
+        return resp
 
     async def upscale(self, image: bytes) -> bytes:
         """ 
