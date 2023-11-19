@@ -58,48 +58,18 @@ class AsyncClient:
     async def close(self) -> None:
         """Close async session"""
         return await self.session.aclose()
-    
-    async def palm(self, prompt: str,model_id:int=0) -> dict:
-        """ 
-        Get an answer from PaLM 2 for the given prompt
-        Example:
-        >>> client = Client()
-        >>> response = await client.palm("Hello, Who are you?")
-        >>> print(response)
 
-        Args:
-            prompt (str): Input text for the query.
-
-        Returns:
-            dict: Answer from the API in the following format:
-                {
-                    "message": str,
-                    "content": str,
-                    "code": int
-                }
+    async def ChatCompletion(self, prompt: str,model : dict = languageModels.palm2) -> dict:
         """
-        params = {
-            "model_id": model_id,
-            "prompt": prompt
-        }
-        resp = await self._request(
-            url=f'{self.url}/models',
-            method='POST',
-            params=params,
-            headers = {"content-type": "application/json"}
-        )
-        return resp
-
-    async def gpt(self, prompt: str,context: str = False) -> dict:
-        """ 
-        Get an answer from GPT-3.5-Turbo for the given prompt
+        Get an answer from LLMs' for the given prompt
         Example:
         >>> client = Client()
-        >>> response = await client.gpt("Hello, Who are you?")
+        >>> response = await client.ChatCompletion("Hello, Who are you?")
         >>> print(response)
 
         Args:
             prompt (str): Input text for the query.
+            model (dict): Model dict of the LLM defaults to palm.
 
         Returns:
             dict: Answer from the API in the following format:
@@ -110,40 +80,8 @@ class AsyncClient:
                 }
         """
         params = {
-            "model_id": 5,
+            "model_id": model.get('modelId',0),
             "prompt": prompt,
-            "context": context if context else ''
-        }
-        resp = await self._request(
-            url=f'{self.url}/models',
-            method='POST',
-            params=params,
-            headers = {"content-type": "application/json"}
-        )
-        return resp
-    
-    async def bard(self, prompt: str,context: str = False) -> dict:
-        """ 
-        Get an answer from Bard AI by google for the given prompt
-        Example:
-        >>> client = Client()
-        >>> response = await client.bard("Hello, Who are you?")
-        >>> print(response)
-
-        Args:
-            prompt (str): Input text for the query.
-
-        Returns:
-            dict: Answer from the API in the following format:
-                {
-                    "message": str,
-                    "content": str,
-                    "code": int
-                }
-        """
-        params = {
-            "model_id": 20,
-            "prompt": prompt
         }
         resp = await self._request(
             url=f'{self.url}/models',

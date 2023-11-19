@@ -1,8 +1,9 @@
 from lexica import Client
+from lexica.constants import languageModels
 
 def main(prompt: str) -> dict:
     client = Client()
-    response = client.gpt(prompt)
+    response = client.ChatCompletion(prompt,languageModels.gpt)
     return response
 
 if __name__ == "__main__":

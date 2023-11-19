@@ -4,7 +4,7 @@ from lexica.constants import languageModels
 
 async def async_main(prompt: str) -> dict:
     client = AsyncClient()
-    response = await client.ChatCompletion(prompt,languageModels.gpt)
+    response = await client.ChatCompletion(prompt,languageModels.llama)
     return response
 
 if __name__ == "__main__":

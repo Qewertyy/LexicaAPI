@@ -1,10 +1,11 @@
 import asyncio
 from lexica import AsyncClient
+from lexica.constants import languageModels
 
-async def main(prompt: str) -> dict:
+async def async_main(prompt: str) -> dict:
     client = AsyncClient()
-    response = await client.bard(prompt)
+    response = await client.ChatCompletion(prompt,languageModels.bard)
     return response
 
 if __name__ == "__main__":
-    print(asyncio.run(main("hello, who are you?")))
+    print(asyncio.run(async_main("hello, who are you?")))

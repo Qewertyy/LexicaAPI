@@ -49,16 +49,17 @@ class Client:
         resp = self._request(url=f'{self.url}/models')
         return resp
     
-    def palm(self, prompt: str) -> dict:
+    def ChatCompletion(self, prompt: str,model : dict = languageModels.palm ) -> dict:
         """ 
-        Get an answer from PaLM 2 for the given prompt
+        Get an answer from LLMs' for the given prompt
         Example:
         >>> client = Client()
-        >>> response = client.palm("Hello, Who are you?")
+        >>> response = client.ChatCompletion("Hello, Who are you?",0)
         >>> print(response)
 
         Args:
             prompt (str): Input text for the query.
+            model (dict): Model dict of the LLM defaults to palm.
 
         Returns:
             dict: Answer from the API in the following format:
@@ -69,40 +70,8 @@ class Client:
                 }
         """
         params = {
-            "model_id": 0,
-            "prompt": prompt
-        }
-        resp = self._request(
-            url=f'{self.url}/models',
-            method='POST',
-            params=params,
-            headers = {"content-type": "application/json"}
-        )
-        return resp
-
-    def gpt(self, prompt: str,context: str=False) -> dict:
-        """ 
-        Get an answer from GPT-3.5-Turbo for the given prompt
-        Example:
-        >>> client = Client()
-        >>> response = client.gpt("Hello, Who are you?")
-        >>> print(response)
-
-        Args:
-            prompt (str): Input text for the query.
-
-        Returns:
-            dict: Answer from the API in the following format:
-                {
-                    "message": str,
-                    "content": str,
-                    "code": int
-                }
-        """
-        params = {
-            "model_id": 5,
-            "prompt": prompt
-            ,"context": context if context else ''
+            "prompt": prompt,
+            "model_id": model.get('modelId',0),
         }
         resp = self._request(
             url=f'{self.url}/models',
@@ -198,35 +167,4 @@ class Client:
             json=payload,
             headers={"content-type": "application/json"}
         )
-        return resp
-    
-    def bard(self, prompt: str,context: str=False) -> dict:
-        """ 
-        Get an answer from Bard AI by google for the given prompt
-        Example:
-        >>> client = Client()
-        >>> response = client.bard("Hello, Who are you?")
-        >>> print(response)
-
-        Args:
-            prompt (str): Input text for the query.
-
-        Returns:
-            dict: Answer from the API in the following format:
-                {
-                    "message": str,
-                    "content": str,
-                    "code": int
-                }
-        """
-        params = {
-            "model_id": 20,
-            "prompt": prompt
-        }
-        resp = self._request(
-            url=f'{self.url}/models',
-            method='POST',
-            params=params,
-            headers={"content-type": "application/json"}
-            )
         return resp
