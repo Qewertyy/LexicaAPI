@@ -63,7 +63,7 @@ class AsyncClient:
         """
         Get an answer from LLMs' for the given prompt
         Example:
-        >>> client = Client()
+        >>> client = AsyncClient()
         >>> response = await client.ChatCompletion("Hello, Who are you?")
         >>> print(response)
 
@@ -95,7 +95,7 @@ class AsyncClient:
         """ 
         Upscale an image
         Example:
-        >>> client = Client()
+        >>> client = AsyncClient()
         >>> response = await client.upscale(image)
         >>> with open('upscaled.png', 'wb') as f:
                 f.write(response)
@@ -117,7 +117,7 @@ class AsyncClient:
         """ 
         Generate image from a prompt
         Example:
-        >>> client = Client()
+        >>> client = AsyncClient()
         >>> response = await client.generate(model_id,prompt,negative_prompt)
         >>> print(response)
 
@@ -152,7 +152,7 @@ class AsyncClient:
         """ 
         Generate image from a prompt
         Example:
-        >>> client = Client()
+        >>> client = AsyncClient()
         >>> response = client.getImages(task_id,request_id)
         >>> print(response)
 
@@ -177,5 +177,67 @@ class AsyncClient:
             method='POST',
             json=payload,
             headers = {"content-type": "application/json"}
+        )
+        return resp
+    
+    async def ImageReverse(self, imageUrl: str) -> dict:
+        """ 
+        Reverse search an image
+        Example:
+        >>> client = AsyncClient()
+        >>> response = await client.ImageReverse(imageUrl)
+        >>> print(response)
+
+        Args:
+            imageUrl (str): url of the image for reverse search.
+
+        Returns:
+            dict: Answer from the API in the following format:
+                {
+                    "message": str,
+                    "content": {
+                        "bestResults": array,
+                        "relatedContent": array,
+                        "others": array
+                        },
+                    "code": int
+                }
+        """
+        resp = await self._request(
+            url=f'{self.url}/image-reverse/bing',
+            method='POST',
+            params={'image_url': imageUrl}
+        )
+        return resp
+    
+    async def MediaDownloaders(self,platform: str,url:str) -> dict:
+        """ 
+        Downloadable links for the given social media url
+        Example:
+        >>> client = AsyncClient()
+        >>> response = client.MediaDownloaders(platform,url)
+        >>> print(response)
+
+        Args:
+            platform (str): social media platform name.
+            url (str): url of the post.
+
+        Returns:
+            dict: Answer from the API in the following format:
+                {
+                    "message": str,
+                    "content": {
+                        "url": array,
+                        "mediaUrls": array,
+                        "by": str,
+                        "title": str,
+                        },
+                    "code": int
+                }
+        """
+        resp = await self._request(
+            url=f'https://api.qewertyy.me/downloaders/{platform}',
+            method='POST',
+            params={'url': url}
         )
         return resp

@@ -168,3 +168,65 @@ class Client:
             headers={"content-type": "application/json"}
         )
         return resp
+    
+    def ImageReverse(self,imageUrl: str) -> dict:
+        """ 
+        Reverse search an image
+        Example:
+        >>> client = Client()
+        >>> response = client.ImageReverse(imageUrl)
+        >>> print(response)
+
+        Args:
+            imageUrl (str): url of the image for reverse search.
+
+        Returns:
+            dict: Answer from the API in the following format:
+                {
+                    "message": str,
+                    "content": {
+                        "bestResults": array,
+                        "relatedContent": array,
+                        "others": array
+                        },
+                    "code": int
+                }
+        """
+        resp = self._request(
+            url=f'{self.url}/image-reverse/bing',
+            method='POST',
+            params={"img_url": imageUrl}
+        )
+        return resp
+    
+    def MediaDownloaders(self,platform: str,url:str):
+        """ 
+        Returns with downloadable links for the given social media url
+        Example:
+        >>> client = Client()
+        >>> response = client.MediaDownloaders(platform,url)
+        >>> print(response)
+
+        Args:
+            platform (str): social media platform name.
+            url (str): url of the post.
+
+        Returns:
+            dict: Answer from the API in the following format:
+                {
+                    "message": str,
+                    "content": {
+                        "url": array,
+                        "mediaUrls": array,
+                        "by": str,
+                        "title": str,
+                        },
+                    "code": int
+                }
+        """
+        resp = self._request(
+            url=f'https://api.qewertyy.me/downloaders/{platform}',
+            method='POST',
+            params={"url": url}
+        )
+        return resp
