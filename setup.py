@@ -8,7 +8,7 @@ def get_long_description():
 
 setup(
     name="lexica-api",
-    version="1.4.4",
+    version="1.4.6",
     author="Qewertyy",
     author_email="Qewertyy.irl@gmail.com",
     description="The python package for api.qewertyy.me",
@@ -21,7 +21,7 @@ setup(
         "httpx[http2]",
         "asyncio"
     ],
-    keywords="Python, API, Bard, Google Bard, Large Language Model, Chatbot API, Google API, Chatbot, Image Generations, Latent Diffusion, State of Art",
+    keywords="Python, API, Bard, Google Bard, Large Language Model, Chatbot API, Google API, Chatbot, Image Generations, Latent Diffusion, State of Art, Image Reverse Search, Reverse Image Search",
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.7",

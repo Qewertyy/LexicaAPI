@@ -169,7 +169,7 @@ class Client:
         )
         return resp
     
-    def ImageReverse(self,imageUrl: str) -> dict:
+    def ImageReverse(self, engine: str,imageUrl: str) -> dict:
         """ 
         Reverse search an image
         Example:
@@ -186,14 +186,14 @@ class Client:
                     "message": str,
                     "content": {
                         "bestResults": array,
-                        "relatedContent": array,
-                        "others": array
+                        "relatedContent": array, #optional
+                        "others": array #optional
                         },
                     "code": int
                 }
         """
         resp = self._request(
-            url=f'{self.url}/image-reverse/bing',
+            url=f'{MISC_URL}/image-reverse/{engine}',
             method='POST',
             params={"img_url": imageUrl}
         )

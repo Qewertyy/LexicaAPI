@@ -1,4 +1,5 @@
 BASE_URL = "https://lexica.qewertyy.me"
+MISC_URL = "https://api.qewertyy.me"
 
 SESSION_HEADERS = {
     "Host": "lexica.qewertyy.me",
