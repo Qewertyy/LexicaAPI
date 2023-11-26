@@ -193,7 +193,7 @@ class Client:
                 }
         """
         resp = self._request(
-            url=f'{MISC_URL}/image-reverse/{engine}',
+            url=f'{self.url}/image-reverse/{engine}',
             method='POST',
             params={"img_url": imageUrl}
         )
