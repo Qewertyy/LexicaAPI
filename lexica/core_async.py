@@ -59,7 +59,7 @@ class AsyncClient:
         """Close async session"""
         return await self.session.aclose()
 
-    async def ChatCompletion(self, prompt: str,model : dict = languageModels.palm2) -> dict:
+    async def ChatCompletion(self, prompt: str,model : dict = languageModels.palm2,*args, **kwargs) -> dict:
         """
         Get an answer from LLMs' for the given prompt
         Example:
@@ -87,6 +87,7 @@ class AsyncClient:
             url=f'{self.url}/models',
             method='POST',
             params=params,
+            json=kwargs.get('json',{}),
             headers = {"content-type": "application/json"}
         )
         return resp

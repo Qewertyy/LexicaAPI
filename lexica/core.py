@@ -49,7 +49,7 @@ class Client:
         resp = self._request(url=f'{self.url}/models')
         return resp
     
-    def ChatCompletion(self, prompt: str,model : dict = languageModels.palm ) -> dict:
+    def ChatCompletion(self, prompt: str,model : dict = languageModels.palm ,*args, **kwargs) -> dict:
         """ 
         Get an answer from LLMs' for the given prompt
         Example:
@@ -77,6 +77,7 @@ class Client:
             url=f'{self.url}/models',
             method='POST',
             params=params,
+            json=kwargs.get('json',{}),
             headers={"content-type": "application/json"}
             )
         return resp
