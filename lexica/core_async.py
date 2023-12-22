@@ -243,7 +243,7 @@ class AsyncClient:
         )
         return resp
     
-    async def SearchImages(self,query: str, engine: str="google") -> dict:
+    async def SearchImages(self,query: str, page: int=0,engine: str="google") -> dict:
         """ 
         Search for images
         Example:
@@ -265,6 +265,6 @@ class AsyncClient:
         resp = await self._request(
             url=f'{self.url}/image-search/{engine}',
             method='POST',
-            params={'query': query}
+            params={'query': query,'page':page}
         )
         return resp

@@ -232,7 +232,7 @@ class Client:
         )
         return resp
     
-    def SearchImages(self,query: str, engine: str="google") -> dict:
+    def SearchImages(self,query: str, page: int=0,engine: str="google") -> dict:
         """ 
         Search for images
         Example:
