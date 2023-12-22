@@ -181,7 +181,7 @@ class AsyncClient:
         )
         return resp
     
-    async def ImageReverse(self, engine: str,imageUrl: str) -> dict:
+    async def ImageReverse(self, imageUrl: str,engine: str="google") -> dict:
         """ 
         Reverse search an image
         Example:
@@ -240,5 +240,31 @@ class AsyncClient:
             url=f'{MISC_URL}/downloaders/{platform}',
             method='POST',
             params={'url': url}
+        )
+        return resp
+    
+    async def SearchImages(self,query: str, engine: str="google") -> dict:
+        """ 
+        Search for images
+        Example:
+        >>> client = AsyncClient()
+        >>> response = await client.SearchImages(query)
+        >>> print(response)
+
+        Args:
+            query (str): query to perform the search.
+
+        Returns:
+            dict: Answer from the API in the following format:
+                {
+                    "message": str,
+                    "content": [],
+                    "code": int
+                }
+        """
+        resp = await self._request(
+            url=f'{self.url}/image-search/{engine}',
+            method='POST',
+            params={'query': query}
         )
         return resp

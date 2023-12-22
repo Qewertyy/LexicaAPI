@@ -170,7 +170,7 @@ class Client:
         )
         return resp
     
-    def ImageReverse(self, engine: str,imageUrl: str) -> dict:
+    def ImageReverse(self, imageUrl: str,engine: str="goole") -> dict:
         """ 
         Reverse search an image
         Example:
@@ -229,5 +229,31 @@ class Client:
             url=f'https://api.qewertyy.me/downloaders/{platform}',
             method='POST',
             params={"url": url}
+        )
+        return resp
+    
+    def SearchImages(self,query: str, engine: str="google") -> dict:
+        """ 
+        Search for images
+        Example:
+        >>> client = Client()
+        >>> response = client.SearchImages(query)
+        >>> print(response)
+
+        Args:
+            query (str): query to perform the search.
+
+        Returns:
+            dict: Answer from the API in the following format:
+                {
+                    "message": str,
+                    "content": [],
+                    "code": int
+                }
+        """
+        resp = self._request(
+            url=f'{self.url}/image-search/{engine}',
+            method='POST',
+            params={"query": query}
         )
         return resp
