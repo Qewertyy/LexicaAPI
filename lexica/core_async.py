@@ -268,3 +268,31 @@ class AsyncClient:
             params={'query': query,'page':page}
         )
         return resp
+    
+    async def AntiNsfw(self, imageUrl: str) -> dict:
+        """ 
+        Check for an image if it is safe for work or not
+        Example:
+        >>> client = AsyncClient()
+        >>> response = await client.AntiNsfw(imageUrl)
+        >>> print(response)
+
+        Args:
+            imageUrl (str): url of the image for anti nsfw.
+
+        Returns:
+            dict: Answer from the API in the following format:
+                {
+                    "message": str,
+                    "content": {
+                        "sfw": bool #true if sfw (safe for work) else false
+                        },
+                    "code": int
+                }
+        """
+        resp = await self._request(
+            url=f'{self.url}/anti-nsfw',
+            method='POST',
+            params={'img_url': imageUrl}
+        )
+        return resp

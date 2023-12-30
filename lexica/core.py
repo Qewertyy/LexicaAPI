@@ -257,3 +257,31 @@ class Client:
             params={"query": query}
         )
         return resp
+    
+    def AntiNsfw(self, imageUrl: str) -> dict:
+        """ 
+        Check for an image if it is safe for work or not
+        Example:
+        >>> client = Client()
+        >>> response = client.AntiNsfw(imageUrl)
+        >>> print(response)
+
+        Args:
+            imageUrl (str): url of the image for reverse search.
+
+        Returns:
+            dict: Answer from the API in the following format:
+                {
+                    "message": str,
+                    "content": {
+                        "sfw": bool #true if sfw (safe for work) else false
+                        },
+                    "code": int
+                }
+        """
+        resp = self._request(
+            url=f'{self.url}/anti-nsfw',
+            method='POST',
+            params={"img_url": imageUrl}
+        )
+        return resp
