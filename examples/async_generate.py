@@ -1,3 +1,5 @@
+# Copyright 2024 Qewertyy, MIT License
+
 import asyncio
 from lexica import AsyncClient
 

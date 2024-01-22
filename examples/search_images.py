@@ -1,3 +1,5 @@
+# Copyright 2024 Qewertyy, MIT License
+
 from lexica import Client
 
 def main(query: str) -> dict:

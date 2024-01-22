@@ -1,6 +1,7 @@
+# Copyright 2024 Qewertyy, MIT License
+
 import base64,mimetypes
-from lexica import Client
-from lexica.constants import languageModels
+from lexica import Client,languageModels
 
 def main(prompt: str,images:list) -> dict:
     client = Client()

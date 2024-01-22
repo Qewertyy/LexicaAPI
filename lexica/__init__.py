@@ -2,10 +2,13 @@
 
 from lexica.core import Client
 from lexica.core_async import AsyncClient
+from lexica.constants import languageModels
 
 __all__ = [
     "Client",
-    "AsyncClient"
+    "AsyncClient",
+    "languageModels"
 ]
-__version__ = "0.0.3"
+
+__version__ = "1.5.2"
 __author__ = "Qewertyy <qewertyy.irl@gmail.com>"

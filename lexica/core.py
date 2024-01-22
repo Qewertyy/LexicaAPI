@@ -1,3 +1,5 @@
+# Copyright 2024 Qewertyy, MIT License
+
 import base64, httpx
 from lexica.constants import *
 from lexica.utils import *
@@ -8,7 +10,7 @@ class Client:
     Sync Client
     """
     def __init__(
-        self
+        self: "Client",
     ):
         """
         Initialize the class
@@ -20,7 +22,7 @@ class Client:
         self.timeout = 60
         self.headers = SESSION_HEADERS
     
-    def _request(self, **kwargs) -> Union[Dict,bytes]:
+    def _request(self : "Client", **kwargs) -> Union[Dict,bytes]:
         self.headers.update(kwargs.get("headers",{}))
         contents = {'json':{},'data':{},'files':{}}
         for i in list(contents):
@@ -49,7 +51,7 @@ class Client:
         resp = self._request(url=f'{self.url}/models')
         return resp
     
-    def ChatCompletion(self, prompt: str,model : dict = languageModels.palm ,*args, **kwargs) -> dict:
+    def ChatCompletion(self : "Client", prompt: str,model : dict = languageModels.palm ,*args, **kwargs) -> dict:
         """ 
         Get an answer from LLMs' for the given prompt
         Example:
@@ -82,7 +84,7 @@ class Client:
             )
         return resp
 
-    def upscale(self, image: bytes) -> bytes:
+    def upscale(self : "Client", image: bytes) -> bytes:
         """ 
         Upscale an image
         Example:
@@ -104,7 +106,7 @@ class Client:
         )
         return content
 
-    def generate(self,model_id:int,prompt:str,negative_prompt:str="",images: int=1) -> dict:
+    def generate(self : "Client",model_id:int,prompt:str,negative_prompt:str="",images: int=1) -> dict:
         """ 
         Generate image from a prompt
         Example:
@@ -138,7 +140,7 @@ class Client:
         )
         return resp
     
-    def getImages(self,task_id:str,request_id:str) -> dict:
+    def getImages(self : "Client",task_id:str,request_id:str) -> dict:
         """ 
         Generate image from a prompt
         Example:
@@ -170,7 +172,7 @@ class Client:
         )
         return resp
     
-    def ImageReverse(self, imageUrl: str,engine: str="goole") -> dict:
+    def ImageReverse(self : "Client", imageUrl: str,engine: str="goole") -> dict:
         """ 
         Reverse search an image
         Example:
@@ -200,7 +202,7 @@ class Client:
         )
         return resp
     
-    def MediaDownloaders(self,platform: str,url:str):
+    def MediaDownloaders(self : "Client",platform: str,url:str):
         """ 
         Returns with downloadable links for the given social media url
         Example:
@@ -232,7 +234,7 @@ class Client:
         )
         return resp
     
-    def SearchImages(self,query: str, page: int=0,engine: str="google") -> dict:
+    def SearchImages(self : "Client",query: str, page: int=0,engine: str="google") -> dict:
         """ 
         Search for images
         Example:
@@ -258,7 +260,7 @@ class Client:
         )
         return resp
     
-    def AntiNsfw(self, imageUrl: str) -> dict:
+    def AntiNsfw(self : "Client", imageUrl: str) -> dict:
         """ 
         Check for an image if it is safe for work or not
         Example:

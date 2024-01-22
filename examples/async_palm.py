@@ -1,6 +1,7 @@
-from lexica import AsyncClient
+# Copyright 2024 Qewertyy, MIT License
+
+from lexica import AsyncClient, languageModels
 import asyncio
-from lexica.constants import languageModels
 
 async def async_main(prompt: str) -> dict:
     client = AsyncClient()

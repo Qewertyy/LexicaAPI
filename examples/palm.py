@@ -1,5 +1,6 @@
-from lexica import Client
-from lexica.constants import languageModels
+# Copyright 2024 Qewertyy, MIT License
+
+from lexica import Client,languageModels
 
 def main(prompt: str) -> dict:
     client = Client()

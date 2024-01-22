@@ -1,3 +1,5 @@
+# Copyright 2024 Qewertyy, MIT License
+
 import time
 from lexica import Client
 

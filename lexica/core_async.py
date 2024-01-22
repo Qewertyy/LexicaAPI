@@ -1,3 +1,5 @@
+# Copyright 2024 Qewertyy, MIT License
+
 import base64
 from typing import Union, Dict
 from httpx import AsyncClient as AsyncHttpxClient
@@ -10,7 +12,7 @@ class AsyncClient:
     """
 
     def __init__(
-        self
+        self: "AsyncClient",
     ):
         """
         Initialize the class
@@ -22,7 +24,7 @@ class AsyncClient:
         self.headers = SESSION_HEADERS
         self.timeout = 60
     
-    async def _request(self, **kwargs) -> Union[Dict,bytes]:
+    async def _request(self : "AsyncClient", **kwargs) -> Union[Dict,bytes]:
         self.headers.update(kwargs.get("headers",{}))
         contents = {'json':{},'data':{},'files':{}}
         for i in list(contents):
@@ -59,7 +61,7 @@ class AsyncClient:
         """Close async session"""
         return await self.session.aclose()
 
-    async def ChatCompletion(self, prompt: str,model : dict = languageModels.palm2,*args, **kwargs) -> dict:
+    async def ChatCompletion(self : "AsyncClient", prompt: str,model : dict = languageModels.palm2,*args, **kwargs) -> dict:
         """
         Get an answer from LLMs' for the given prompt
         Example:
@@ -92,7 +94,7 @@ class AsyncClient:
         )
         return resp
 
-    async def upscale(self, image: bytes) -> bytes:
+    async def upscale(self : "AsyncClient", image: bytes) -> bytes:
         """ 
         Upscale an image
         Example:
@@ -114,7 +116,7 @@ class AsyncClient:
         )
         return content
     
-    async def generate(self,model_id:int,prompt:str,negative_prompt:str="",images: int= 1) -> dict:
+    async def generate(self : "AsyncClient",model_id:int,prompt:str,negative_prompt:str="",images: int= 1) -> dict:
         """ 
         Generate image from a prompt
         Example:
@@ -149,7 +151,7 @@ class AsyncClient:
         )
         return resp
     
-    async def getImages(self,task_id:str,request_id:str) -> dict:
+    async def getImages(self : "AsyncClient",task_id:str,request_id:str) -> dict:
         """ 
         Generate image from a prompt
         Example:
@@ -181,7 +183,7 @@ class AsyncClient:
         )
         return resp
     
-    async def ImageReverse(self, imageUrl: str,engine: str="google") -> dict:
+    async def ImageReverse(self : "AsyncClient", imageUrl: str,engine: str="google") -> dict:
         """ 
         Reverse search an image
         Example:
@@ -211,7 +213,7 @@ class AsyncClient:
         )
         return resp
     
-    async def MediaDownloaders(self,platform: str,url:str) -> dict:
+    async def MediaDownloaders(self : "AsyncClient",platform: str,url:str) -> dict:
         """ 
         Downloadable links for the given social media url
         Example:
@@ -243,7 +245,7 @@ class AsyncClient:
         )
         return resp
     
-    async def SearchImages(self,query: str, page: int=0,engine: str="google") -> dict:
+    async def SearchImages(self : "AsyncClient",query: str, page: int=0,engine: str="google") -> dict:
         """ 
         Search for images
         Example:
@@ -269,7 +271,7 @@ class AsyncClient:
         )
         return resp
     
-    async def AntiNsfw(self, imageUrl: str) -> dict:
+    async def AntiNsfw(self : "AsyncClient", imageUrl: str) -> dict:
         """ 
         Check for an image if it is safe for work or not
         Example:
