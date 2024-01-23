@@ -10,5 +10,5 @@ __all__ = [
     "languageModels"
 ]
 
-__version__ = "1.5.3"
+__version__ = "1.5.4"
 __author__ = "Qewertyy <qewertyy.irl@gmail.com>"

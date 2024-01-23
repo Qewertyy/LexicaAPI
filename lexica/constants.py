@@ -1,24 +1,21 @@
 # Copyright 2024 Qewertyy, MIT License
 
-import re
+import re,os
 
 BASE_URL = "https://lexica.qewertyy.dev"
 MISC_URL = "https://api.qewertyy.dev"
 
-def get_version():
-    filename = "__init__.py"
-    with open(filename) as f:
-        match = re.search(r"""^__version__ = ['"]([^'"]*)['"]""", f.read(), re.M)
-    if not match:
-        raise RuntimeError("{} doesn't contain __version__".format(filename))
-    version = match.groups()[0]
-    return version
+dirpath = os.path.dirname(os.path.abspath(__file__))
+with open(dirpath+"/__init__.py") as f:
+    match = re.search(r"""^__version__ = ['"]([^'"]*)['"]""", f.read(), re.M)
+if not match:
+    raise RuntimeError("__init__.py doesn't contain __version__")
+version = match.groups()[0]
 
 SESSION_HEADERS = {
     "Host": "lexica.qewertyy.dev",
-    "User-Agent":f"Lexica/{get_version()}"
+    "User-Agent":f"Lexica/{version}",
 }
-
 
 class languageModels(object):
     bard = {"modelId":20,"name":"Bard"}
