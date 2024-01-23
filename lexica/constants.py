@@ -6,7 +6,7 @@ BASE_URL = "https://lexica.qewertyy.dev"
 MISC_URL = "https://api.qewertyy.dev"
 
 def get_version():
-    filename = "lexica/__init__.py"
+    filename = "__init__.py"
     with open(filename) as f:
         match = re.search(r"""^__version__ = ['"]([^'"]*)['"]""", f.read(), re.M)
     if not match:
