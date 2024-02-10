@@ -172,7 +172,7 @@ class Client:
         )
         return resp
     
-    def ImageReverse(self : "Client", imageUrl: str,engine: str="goole") -> dict:
+    def ImageReverse(self : "Client", imageUrl: str,engine: str="google") -> dict:
         """ 
         Reverse search an image
         Example:
