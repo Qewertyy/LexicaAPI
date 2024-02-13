@@ -21,6 +21,7 @@ class Client:
             )
         self.timeout = 60
         self.headers = SESSION_HEADERS
+        self.models = self.getModels()
     
     def _request(self : "Client", **kwargs) -> Union[Dict,bytes]:
         self.headers.update(kwargs.get("headers",{}))
@@ -172,7 +173,7 @@ class Client:
         )
         return resp
     
-    def ImageReverse(self : "Client", imageUrl: str,engine: str="google") -> dict:
+    def ImageReverse(self : "Client", imageUrl: str,engine: str="goole") -> dict:
         """ 
         Reverse search an image
         Example:

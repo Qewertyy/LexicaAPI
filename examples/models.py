@@ -7,7 +7,7 @@ import asyncio
 
 async def async_main() -> dict:
     client = AsyncClient()
-    response = await client.getModels()
+    response = await client.models
     await client.close()
     return response
 
@@ -17,9 +17,9 @@ from lexica import Client
 
 def main() -> dict:
     client = Client()
-    response = client.getModels()
-    return response
+    return client.models
+
 
 if __name__ == "__main__":
-    print(main())
-    #print(asyncio.run(async_main()))
+    #print(main())
+    print(asyncio.run(async_main()))
