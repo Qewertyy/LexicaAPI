@@ -261,7 +261,7 @@ class Client:
         )
         return resp
     
-    def AntiNsfw(self : "Client", imageUrl: str, modelId: int = 28) -> dict:
+    def AntiNsfw(self : "Client", imageUrl: str, modelId: int) -> dict:
         """ 
         Check for an image if it is safe for work or not
         Example:
