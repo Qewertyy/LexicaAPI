@@ -261,7 +261,7 @@ class Client:
         )
         return resp
     
-    def AntiNsfw(self : "Client", imageUrl: str) -> dict:
+    def AntiNsfw(self : "Client", imageUrl: str, modelId: int = 28) -> dict:
         """ 
         Check for an image if it is safe for work or not
         Example:
@@ -285,6 +285,6 @@ class Client:
         resp = self._request(
             url=f'{self.url}/anti-nsfw',
             method='POST',
-            params={"img_url": imageUrl}
+            params={"img_url": imageUrl,"model_id": modelId}
         )
         return resp

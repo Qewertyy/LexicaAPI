@@ -26,3 +26,4 @@ class languageModels(object):
     gpt = {"modelId":5,"name":"ChatGPT"}
     gemini = {"modelId":23,"name":"Gemini-Pro"}
     geminiVision = {"modelId":24,"name":"Gemini-Pro-Vision"}
+    openhermes = {"modelId":27,"name":"OpenHermes"}

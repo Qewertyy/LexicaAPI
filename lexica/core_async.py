@@ -272,7 +272,7 @@ class AsyncClient:
         )
         return resp
     
-    async def AntiNsfw(self : "AsyncClient", imageUrl: str) -> dict:
+    async def AntiNsfw(self : "AsyncClient", imageUrl: str, modelId: int = 28) -> dict:
         """ 
         Check for an image if it is safe for work or not
         Example:
@@ -296,6 +296,6 @@ class AsyncClient:
         resp = await self._request(
             url=f'{self.url}/anti-nsfw',
             method='POST',
-            params={'img_url': imageUrl}
+            params={'img_url': imageUrl,"model_id":modelId}
         )
         return resp
