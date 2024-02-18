@@ -4,11 +4,17 @@ from lexica import Client
 
 def main(image_url: str) -> dict:
     client = Client()
-    response = client.AntiNsfw(image_url)
-    if response['content']['sfw'] == True:
+    response = client.AntiNsfw(image_url,29)
+    print(response)
+    if 'sfw' in response['content'] and response['content']['sfw'] == True:
         return "This image is safe for work."
+    elif 'isNsfw' in response['content']:
+        if response['content']['isNsfw'] == True:
+            return "This image is not safe for work."
+        else:
+            return "This image is safe for work."
     else:
         return "This image is not safe for work."
 
 if __name__ == "__main__":
-    print(main("https://graph.org/file/13e95c6cc932530823391.png"))
+    print(main("https://graph.org/file/de1888dd4fdfbc647c398.jpg"))

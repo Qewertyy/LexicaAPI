@@ -5,12 +5,18 @@ import asyncio
 
 async def main(image_url: str) -> dict:
     client = AsyncClient()
-    response = await client.AntiNsfw(image_url)
+    response = await client.AntiNsfw(image_url,29)
     await client.close()
-    if response['content']['sfw'] == True:
+    print(response)
+    if 'sfw' in response['content'] and response['content']['sfw'] == True:
         return "This image is safe for work."
+    elif 'isNsfw' in response['content']:
+        if response['content']['isNsfw'] == True:
+            return "This image is not safe for work."
+        else:
+            return "This image is safe for work."
     else:
         return "This image is not safe for work."
 
 if __name__ == "__main__":
-    print(asyncio.run(main("https://graph.org/file/13e95c6cc932530823391.png")))
+    print(asyncio.run(main("https://graph.org/file/a642e642fe01a917fd5b5.jpg")))
