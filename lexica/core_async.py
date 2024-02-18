@@ -23,7 +23,7 @@ class AsyncClient:
         )
         self.headers = SESSION_HEADERS
         self.timeout = 60
-        self.models = self.getModels()
+        #self.models = self.getModels()
     
     async def _request(self : "AsyncClient", **kwargs) -> Union[Dict,bytes]:
         self.headers.update(kwargs.get("headers",{}))
