@@ -1,7 +1,7 @@
 # Copyright 2024 Qewertyy, MIT License
 
 import base64
-from typing import Union, Dict
+from typing import Union, Dict,Optional
 from httpx import AsyncClient as AsyncHttpxClient
 from lexica.constants import *
 from lexica.utils import *
@@ -95,7 +95,7 @@ class AsyncClient:
         )
         return resp
 
-    async def upscale(self : "AsyncClient", image: bytes, extras:dict=None) -> bytes:
+    async def upscale(self : "AsyncClient", image: bytes= None, image_url: str= None,format: str = "binary") -> bytes:
         """ 
         Upscale an image
         Example:
@@ -109,11 +109,19 @@ class AsyncClient:
         Returns:
             bytes: Upscaled image in bytes.
         """
-        b = base64.b64encode(image).decode('utf-8')
+        payload = {
+            "format": format,
+        }
+        if image and not image_url:
+            payload.setdefault('image_data',base64.b64encode(image).decode('utf-8'))
+        elif not image and not image_url:
+            raise Exception("No image or image_url provided")
+        else:
+            payload.setdefault('image_url',image_url)
         content = await self._request(
             url=f'{self.url}/upscale',
-            method='POST',
-            json={'image_data': b, **(extras or {})},
+            method = 'POST',
+            json=payload
         )
         return content
     

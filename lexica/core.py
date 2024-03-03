@@ -85,7 +85,7 @@ class Client:
             )
         return resp
 
-    def upscale(self : "Client", image: bytes, extras:dict=None) -> bytes:
+    def upscale(self : "Client", image: bytes= None, image_url: str= None,format: str = "binary") -> bytes:
         """ 
         Upscale an image
         Example:
@@ -99,11 +99,19 @@ class Client:
         Returns:
             bytes: Upscaled image in bytes.
         """
-        b = base64.b64encode(image).decode('utf-8')
+        payload = {
+            "format": format,
+        }
+        if image and not image_url:
+            payload.setdefault('image_data',base64.b64encode(image).decode('utf-8'))
+        elif not image and not image_url:
+            raise Exception("Either image or image_url is required")
+        else:
+            payload.setdefault('image_url',image_url)
         content = self._request(
             url=f'{self.url}/upscale',
             method = 'POST',
-            json={'image_data': b,**(extras or {})}
+            json=payload
         )
         return content
 
