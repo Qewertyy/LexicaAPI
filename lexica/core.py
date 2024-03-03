@@ -85,7 +85,7 @@ class Client:
             )
         return resp
 
-    def upscale(self : "Client", image: bytes) -> bytes:
+    def upscale(self : "Client", image: bytes, extras:dict=None) -> bytes:
         """ 
         Upscale an image
         Example:
@@ -103,7 +103,7 @@ class Client:
         content = self._request(
             url=f'{self.url}/upscale',
             method = 'POST',
-            json={'image_data': b}
+            json={'image_data': b,**(extras or {})}
         )
         return content
 

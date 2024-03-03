@@ -95,7 +95,7 @@ class AsyncClient:
         )
         return resp
 
-    async def upscale(self : "AsyncClient", image: bytes) -> bytes:
+    async def upscale(self : "AsyncClient", image: bytes, extras:dict=None) -> bytes:
         """ 
         Upscale an image
         Example:
@@ -113,7 +113,7 @@ class AsyncClient:
         content = await self._request(
             url=f'{self.url}/upscale',
             method='POST',
-            json={'image_data': b}
+            json={'image_data': b, **(extras or {})},
         )
         return content
     
