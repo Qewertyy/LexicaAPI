@@ -29,8 +29,7 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(),
     install_requires=[
-        "httpx[http2]",
-        "asyncio"
+        "httpx[http2]"
     ],
     keywords="Python, API, Bard, Google Bard, Large Language Model, Chatbot API, Google API, Chatbot, Image Generations, Latent Diffusion, State of Art, Image Reverse Search, Reverse Image Search",
     classifiers=[
