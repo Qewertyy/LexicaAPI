@@ -1,5 +1,24 @@
-LLM's
+Here are some projects which utilizes the LexicaAPI.
 
+### AverageAI
+- **Name:** [AverageAI](https://ai.qewertyy.dev)
+- **Description:** Image Generations and LLMs.
+
+### AverageImages
+- **Name:** [AverageImages](https://images.qewertyy.dev)
+- **Description:** Search Images on google and bing.
+
+### Upscale
+- **Name:** [Upscale](https://upscale.qewertyy.dev)
+- **Description:** Upscale Images.
+
+## AverageNews
+- **Name:** [AverageNews](https://news.qewertyy.dev)
+- **Description:** News App.
+
+
+## Usages
+LLM's
 ```python
 from lexica import Client, languageModels
 
