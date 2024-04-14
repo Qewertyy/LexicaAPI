@@ -1,4 +1,4 @@
-Here are some projects which utilizes the LexicaAPI.
+## Here are some projects which utilizes the LexicaAPI.
 
 ### AverageAI
 - **Name:** [AverageAI](https://ai.qewertyy.dev)
@@ -12,11 +12,12 @@ Here are some projects which utilizes the LexicaAPI.
 - **Name:** [Upscale](https://upscale.qewertyy.dev)
 - **Description:** Upscale Images.
 
-## AverageNews
+### AverageNews
 - **Name:** [AverageNews](https://news.qewertyy.dev)
 - **Description:** News App.
 
-
+### TelegramBots
+[Miko](https://github.com/Awesome-Tofu/miko-bot), [Sung](https://github.com/Dhruv-Tara/Sung), [GameInfoBot](https://github.com/barryspacezero/Telegram-GameInfoBot), [YaeMiko](https://github.com/Infamous-Hydra/YaeMiko), [FilterBot](https://github.com/Codeflix-Bots/AutoFilter), [News](https://github.com/SOMEH1NG/TechNewsDigest) [etc..](https://github.com/search?q=https%3A%2F%2Fapi.qewertyy.dev&type=code)
 ## Usages
 LLM's
 ```python
