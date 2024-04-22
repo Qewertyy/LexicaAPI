@@ -22,7 +22,7 @@ setup(
     version=get_version(),
     author="Qewertyy",
     author_email="Qewertyy.irl@gmail.com",
-    description="The python package for api.qewertyy.me",
+    description="The python package for api.qewertyy.dev",
     url="https://github.com/Qewertyy/LexicaAPI",
     python_requires=">=3.8",
     long_description=get_long_description(),
