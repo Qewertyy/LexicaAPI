@@ -29,7 +29,7 @@ from lexica import Client, languageModels
 
 def main(prompt: str) -> dict:
     client = Client()
-    response = client.palm(prompt,languageModels.palm2)
+    response = client.palm(prompt,languageModels.gemini)
     return response
 
 if __name__ == "__main__":
