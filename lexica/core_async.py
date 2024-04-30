@@ -62,7 +62,7 @@ class AsyncClient:
         """Close async session"""
         return await self.session.aclose()
 
-    async def ChatCompletion(self : "AsyncClient", prompt: str,model : dict = languageModels.palm2,*args, **kwargs) -> dict:
+    async def ChatCompletion(self : "AsyncClient", prompt: str,model : dict = languageModels.gemini,*args, **kwargs) -> dict:
         """
         Get an answer from LLMs' for the given prompt
         Example:

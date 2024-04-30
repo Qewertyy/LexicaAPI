@@ -52,7 +52,7 @@ class Client:
         resp = self._request(url=f'{self.url}/models')
         return resp
     
-    def ChatCompletion(self : "Client", prompt: str,model : dict = languageModels.palm ,*args, **kwargs) -> dict:
+    def ChatCompletion(self : "Client", prompt: str,model : dict = languageModels.gemini ,*args, **kwargs) -> dict:
         """ 
         Get an answer from LLMs' for the given prompt
         Example:
