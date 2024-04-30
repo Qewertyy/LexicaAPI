@@ -3,7 +3,7 @@
 import re,os
 
 BASE_URL = "https://lexica.qewertyy.dev"
-MISC_URL = "https://api.qewertyy.dev"
+ALTERNATE_URL = "https://api.qewertyy.dev"
 
 dirpath = os.path.dirname(os.path.abspath(__file__))
 with open(dirpath+"/__init__.py") as f:
@@ -18,6 +18,7 @@ SESSION_HEADERS = {
 }
 
 class languageModels(object):
+    gemma = {"modelId":1,"name":"Gemma"}
     bard = {"modelId":20,"name":"Bard"}
     mistral = {"modelId":21,"name":"LLAMA 2"}
     llama = {"modelId":18,"name":"LLAMA"}
