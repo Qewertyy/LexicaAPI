@@ -1,7 +1,7 @@
 # Copyright 2024 Qewertyy, MIT License
 
 import base64
-from typing import Union, Dict,Optional
+from typing import Union, Dict
 from httpx import AsyncClient as AsyncHttpxClient
 from lexica.constants import *
 from lexica.utils import *
@@ -248,7 +248,7 @@ class AsyncClient:
                 }
         """
         resp = await self._request(
-            url=f'{MISC_URL}/downloaders/{platform}',
+            url=f'{self.url}/downloaders/{platform}',
             method='POST',
             params={'url': url}
         )
