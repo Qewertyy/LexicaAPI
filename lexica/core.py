@@ -237,7 +237,7 @@ class Client:
                 }
         """
         resp = self._request(
-            url=f'https://api.qewertyy.me/downloaders/{platform}',
+            url=f'{self.url}/downloaders/{platform}',
             method='POST',
             params={"url": url}
         )
