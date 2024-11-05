@@ -14,10 +14,7 @@ def main(prompt: str,images:list) -> dict:
                 "data": data,
                 "mime_type": mime_type
             })
-    payload = {
-        "images":imageInfo
-    }
-    response = client.ChatCompletion(prompt,languageModels.geminiVision,json=payload)
+    response = client.ChatCompletion(prompt,languageModels.geminiVision,images=imageInfo)
     return response
 
 if __name__ == "__main__":

@@ -1,10 +1,11 @@
 # Copyright 2024 Qewertyy, MIT License
 
 from lexica import Client,languageModels
+from lexica.constants import Messages
 
 def main(prompt: str) -> dict:
     client = Client()
-    response = client.ChatCompletion(prompt,languageModels.gemini)
+    response = client.ChatCompletion([Messages(content=prompt,role="user")],languageModels.gemini)
     return response
 
 if __name__ == "__main__":

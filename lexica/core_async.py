@@ -1,10 +1,11 @@
 # Copyright 2024 Qewertyy, MIT License
 
 import base64
-from typing import Union, Dict
+from typing import Union, Dict, List
 from httpx import AsyncClient as AsyncHttpxClient
 from lexica.constants import *
 from lexica.utils import *
+
 
 class AsyncClient:
     """
@@ -23,38 +24,42 @@ class AsyncClient:
         )
         self.headers = SESSION_HEADERS
         self.timeout = 60
-        #self.models = self.getModels()
-    
-    async def _request(self : "AsyncClient", **kwargs) -> Union[Dict,bytes]:
-        self.headers.update(kwargs.get("headers",{}))
-        contents = {'json':{},'data':{},'files':{}}
-        for i in list(contents):
-            if i in kwargs:
-                contents[i] = clean_dict(kwargs.get(i))
+        # self.models = self.getModels()
+
+    async def _request(self: "AsyncClient", **kwargs) -> Union[Dict, bytes]:
+        self.headers.update(kwargs.get("headers", {}))
+        contents = {"json": {}, "data": {}, "files": {}}
+        # for i in list(contents):
+        #     if i in kwargs:
+        #         contents[i] = clean_dict(kwargs.get(i))
         response = await self.session.request(
-                method=kwargs.get('method', 'GET'),
-                url=kwargs.get('url'),
-                headers=self.headers,
-                content=kwargs.get('content'),
-                params=kwargs.get('params'),
-                data=contents.get('data'),
-                json=contents.get('json'),
-                files=contents.get('files'),
-                timeout=self.timeout,
-            )
+            method=kwargs.get("method", "GET"),
+            url=kwargs.get("url"),
+            headers=self.headers,
+            content=kwargs.get("content"),
+            params=kwargs.get("params"),
+            data=kwargs.get("data"),
+            json=kwargs.get("json"),
+            files=kwargs.get("files"),
+            timeout=self.timeout,
+        )
         if response.status_code != 200:
             raise Exception(f"API error {response.text}")
-        if response.headers.get('content-type') in ['image/png','image/jpeg','image/jpg'] :
+        if response.headers.get("content-type") in [
+            "image/png",
+            "image/jpeg",
+            "image/jpg",
+        ]:
             return response.content
         rdata = response.json()
-        if rdata['code'] == 0:
+        if rdata["code"] == 0:
             raise Exception(f"API error {response.text}")
         return rdata
 
     async def getModels(self) -> dict:
-        resp = await self._request(url=f'{self.url}/models')
+        resp = await self._request(url=f"{self.url}/models")
         return resp
-    
+
     async def __aenter__(self):
         return self
 
@@ -62,7 +67,12 @@ class AsyncClient:
         """Close async session"""
         return await self.session.aclose()
 
-    async def ChatCompletion(self : "AsyncClient", prompt: str,model : dict = languageModels.gemini,*args, **kwargs) -> dict:
+    async def ChatCompletion(
+        self: "AsyncClient",
+        messages: Union[List[Messages], str],
+        model: dict = languageModels.gemini,
+        **kwargs,
+    ) -> dict:
         """
         Get an answer from LLMs' for the given prompt
         Example:
@@ -82,21 +92,49 @@ class AsyncClient:
                     "code": int
                 }
         """
-        params = {
-            "model_id": model.get('modelId',0),
-            "prompt": prompt,
-        }
+        model_id = model.get("modelId", 1)
+
+        payload = {"model_id": model_id, **kwargs}
+
+        if isinstance(messages, list) and all(
+            isinstance(m, Messages) for m in messages
+        ):
+            if model_id in [20, 24]:
+                payload["prompt"] = "\n".join(
+                    [m.content for m in messages if m.role == "user"]
+                )
+            else:
+                payload["messages"] = [
+                    {"content": m.content, "role": m.role} for m in messages
+                ]
+
+        elif isinstance(messages, str):
+            if model_id in [20, 24]:
+                payload["prompt"] = messages
+            else:
+                payload["messages"] = [
+                    {"content": "You are a helpful assistant", "role": "assistant"},
+                    {"content": messages, "role": "user"},
+                ]
+        else:
+            raise ValueError(
+                "Invalid input: messages must be a list of Messages or a string."
+            )
         resp = await self._request(
-            url=f'{self.url}/models',
-            method='POST',
-            params=params,
-            json=kwargs.get('json',{}),
-            headers = {"content-type": "application/json"}
+            url=f"{self.url}/models",
+            method="POST",
+            json=payload,
+            headers={"content-type": "application/json"},
         )
         return resp
 
-    async def upscale(self : "AsyncClient", image: bytes= None, image_url: str= None,format: str = "binary") -> bytes:
-        """ 
+    async def upscale(
+        self: "AsyncClient",
+        image: bytes = None,
+        image_url: str = None,
+        format: str = "binary",
+    ) -> bytes:
+        """
         Upscale an image
         Example:
         >>> client = AsyncClient()
@@ -113,20 +151,24 @@ class AsyncClient:
             "format": format,
         }
         if image and not image_url:
-            payload.setdefault('image_data',base64.b64encode(image).decode('utf-8'))
+            payload.setdefault("image_data", base64.b64encode(image).decode("utf-8"))
         elif not image and not image_url:
             raise Exception("No image or image_url provided")
         else:
-            payload.setdefault('image_url',image_url)
+            payload.setdefault("image_url", image_url)
         content = await self._request(
-            url=f'{self.url}/upscale',
-            method = 'POST',
-            json=payload
+            url=f"{self.url}/upscale", method="POST", json=payload
         )
         return content
-    
-    async def generate(self : "AsyncClient",model_id:int,prompt:str,negative_prompt:str="",images: int= 1) -> dict:
-        """ 
+
+    async def generate(
+        self: "AsyncClient",
+        model_id: int,
+        prompt: str,
+        negative_prompt: str = "",
+        images: int = 1,
+    ) -> dict:
+        """
         Generate image from a prompt
         Example:
         >>> client = AsyncClient()
@@ -149,19 +191,19 @@ class AsyncClient:
         payload = {
             "model_id": model_id,
             "prompt": prompt,
-            "negative_prompt": negative_prompt, #optional
-            "num_images": images,  #optional number of images to generate (default: 1) and max 4
+            "negative_prompt": negative_prompt,  # optional
+            "num_images": images,  # optional number of images to generate (default: 1) and max 4
         }
         resp = await self._request(
-            url=f'{self.url}/models/inference',
-            method='POST',
+            url=f"{self.url}/models/inference",
+            method="POST",
             json=payload,
-            headers = {"content-type": "application/json"}
+            headers={"content-type": "application/json"},
         )
         return resp
-    
-    async def getImages(self : "AsyncClient",task_id:str,request_id:str) -> dict:
-        """ 
+
+    async def getImages(self: "AsyncClient", task_id: str, request_id: str) -> dict:
+        """
         Generate image from a prompt
         Example:
         >>> client = AsyncClient()
@@ -180,20 +222,19 @@ class AsyncClient:
                     "code": int
                 }
         """
-        payload = {
-            "task_id": task_id,
-            "request_id": request_id
-        }
+        payload = {"task_id": task_id, "request_id": request_id}
         resp = await self._request(
-            url=f'{self.url}/models/inference/task',
-            method='POST',
+            url=f"{self.url}/models/inference/task",
+            method="POST",
             json=payload,
-            headers = {"content-type": "application/json"}
+            headers={"content-type": "application/json"},
         )
         return resp
-    
-    async def ImageReverse(self : "AsyncClient", imageUrl: str,engine: str="google") -> dict:
-        """ 
+
+    async def ImageReverse(
+        self: "AsyncClient", imageUrl: str, engine: str = "google"
+    ) -> dict:
+        """
         Reverse search an image
         Example:
         >>> client = AsyncClient()
@@ -216,14 +257,14 @@ class AsyncClient:
                 }
         """
         resp = await self._request(
-            url=f'{self.url}/image-reverse/{engine}',
-            method='POST',
-            params={'img_url': imageUrl}
+            url=f"{self.url}/image-reverse/{engine}",
+            method="POST",
+            params={"img_url": imageUrl},
         )
         return resp
-    
-    async def MediaDownloaders(self : "AsyncClient",platform: str,url:str) -> dict:
-        """ 
+
+    async def MediaDownloaders(self: "AsyncClient", platform: str, url: str) -> dict:
+        """
         Downloadable links for the given social media url
         Example:
         >>> client = AsyncClient()
@@ -248,14 +289,14 @@ class AsyncClient:
                 }
         """
         resp = await self._request(
-            url=f'{self.url}/downloaders/{platform}',
-            method='POST',
-            params={'url': url}
+            url=f"{self.url}/downloaders/{platform}", method="POST", params={"url": url}
         )
         return resp
-    
-    async def SearchImages(self : "AsyncClient",query: str, page: int=0,engine: str="google") -> dict:
-        """ 
+
+    async def SearchImages(
+        self: "AsyncClient", query: str, page: int = 0, engine: str = "google"
+    ) -> dict:
+        """
         Search for images
         Example:
         >>> client = AsyncClient()
@@ -274,14 +315,14 @@ class AsyncClient:
                 }
         """
         resp = await self._request(
-            url=f'{self.url}/image-search/{engine}',
-            method='POST',
-            params={'query': query,'page':page}
+            url=f"{self.url}/image-search/{engine}",
+            method="POST",
+            params={"query": query, "page": page},
         )
         return resp
-    
-    async def AntiNsfw(self : "AsyncClient", imageUrl: str, modelId: int = 28) -> dict:
-        """ 
+
+    async def AntiNsfw(self: "AsyncClient", imageUrl: str, modelId: int = 28) -> dict:
+        """
         Check for an image if it is safe for work or not
         Example:
         >>> client = AsyncClient()
@@ -302,8 +343,8 @@ class AsyncClient:
                 }
         """
         resp = await self._request(
-            url=f'{self.url}/anti-nsfw',
-            method='POST',
-            params={'img_url': imageUrl,"model_id":modelId}
+            url=f"{self.url}/anti-nsfw",
+            method="POST",
+            params={"img_url": imageUrl, "model_id": modelId},
         )
         return resp

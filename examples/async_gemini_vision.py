@@ -16,10 +16,7 @@ async def async_main(prompt: str,images: list) -> dict:
                 "data": data,
                 "mime_type": mime_type
             })
-    payload = {
-        "images":imageInfo
-    }
-    response = await client.ChatCompletion(prompt,languageModels.geminiVision,json=payload)
+    response = await client.ChatCompletion(prompt,languageModels.geminiVision,images=imageInfo)
     return response
 
 if __name__ == "__main__":

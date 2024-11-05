@@ -1,11 +1,11 @@
 # Copyright 2024 Qewertyy, MIT License
 
 import asyncio
-from lexica import AsyncClient, languageModels
+from lexica import AsyncClient, languageModels, Messages
 
 async def async_main(prompt: str) -> dict:
     client = AsyncClient()
-    response = await client.ChatCompletion(prompt,languageModels.mistral)
+    response = await client.ChatCompletion([Messages(content=prompt,role="user")],languageModels.mistral)
     return response
 
 if __name__ == "__main__":
